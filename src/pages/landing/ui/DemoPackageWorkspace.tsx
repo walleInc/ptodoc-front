@@ -213,6 +213,12 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
                     <p className="text-sm">Предпросмотр доступен только для PDF.</p>
                   </div>
                 )}
+                {!processing && !fileUrl && (
+                  <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+                    <FileQuestion className="h-10 w-10" />
+                    <p className="text-sm">Файл недоступен для предпросмотра.</p>
+                  </div>
+                )}
               </div>
             </div>
           ) : (

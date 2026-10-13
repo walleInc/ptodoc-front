@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from '@/shared'
 import { ObjectInfoGrid } from './ObjectInfoGrid'
+import { ObjectPackagesCard } from './ObjectPackagesCard'
 import { ObjectStatsCard } from './ObjectStatsCard'
 
 export function ObjectDetailPage() {
@@ -163,6 +164,8 @@ export function ObjectDetailPage() {
       </Card>
 
       <ObjectStatsCard object={object} />
+
+      <ObjectPackagesCard objectId={object.id} />
 
       <ConfirmDialog
         isOpen={showArchiveDialog}

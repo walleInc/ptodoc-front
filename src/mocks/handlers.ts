@@ -25,10 +25,13 @@ import {
   latestMockPackageId,
   getMockChecklist,
   getMockDocument,
+  getMockDocumentFile,
+  getMockFileBody,
   getMockPackage,
-  markMockUploaded,
+  listMockPackages,
   resetMockPackages,
   startMockPackage,
+  storeMockUploadedFile,
 } from './data/packages'
 import {
   mockObjects,
@@ -266,6 +269,14 @@ export const handlers = [
   }),
 
   // === PACKAGES / UPLOAD ===
+  http.get('/api/objects/:id/packages', async ({ request, params, cookies }) => {
+    if (!sessionUser(request, cookies)) return unauthorized()
+    return withDelay(() => {
+      if (!mockObjects.some((o) => o.id === params.id)) return notFound()
+      return HttpResponse.json(listMockPackages(String(params.id)))
+    })
+  }),
+
   http.post('/api/objects/:id/packages', async ({ request, params, cookies }) => {
     if (!sessionUser(request, cookies)) return unauthorized()
 
@@ -280,11 +291,23 @@ export const handlers = [
   }),
 
   // Имитация presigned PUT в объектное хранилище (без авторизации, как у S3)
-  http.put('/api/__mocks__/upload/:documentId', async ({ params }) => {
+  http.put('/api/__mocks__/upload/:documentId', async ({ request, params }) => {
     await delay(400)
-    return markMockUploaded(String(params.documentId))
+    const documentId = String(params.documentId)
+    const body = await request.arrayBuffer()
+    const contentType = request.headers.get('Content-Type') || 'application/octet-stream'
+    return storeMockUploadedFile(documentId, body, contentType)
       ? new HttpResponse(null, { status: 200 })
       : new HttpResponse(null, { status: 404 })
+  }),
+
+  // Отдача загруженных байт по ссылке из GET /documents/:id/file
+  http.get('/api/__mocks__/files/:documentId', ({ params }) => {
+    const file = getMockFileBody(String(params.documentId))
+    if (!file) return new HttpResponse(null, { status: 404 })
+    return new HttpResponse(file.body, {
+      headers: { 'Content-Type': file.contentType },
+    })
   }),
 
   http.post('/api/packages/:id/start', async ({ request, params, cookies }) => {
@@ -462,15 +485,15 @@ export const handlers = [
     })
   }),
 
-  http.get('/api/documents/:id/file', async ({ request, cookies }) => {
+  http.get('/api/documents/:id/file', async ({ request, params, cookies }) => {
     if (!sessionUser(request, cookies)) return unauthorized()
-    return withDelay(() =>
-      HttpResponse.json({
-        // В моках для любого документа отдаём один тестовый PDF
-        url: '/mock-docs/sample.pdf',
-        expiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
-      })
-    )
+    return withDelay(() => {
+      const file = getMockDocumentFile(String(params.id))
+      if (!file) {
+        return HttpResponse.json({ code: 'not_found', message: 'Документ не найден' }, { status: 404 })
+      }
+      return HttpResponse.json(file)
+    })
   }),
 
   // === CATALOGS ===

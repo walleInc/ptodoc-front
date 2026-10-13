@@ -95,7 +95,7 @@ export function useUploadQueue(objectId: string) {
     await runPool(list, async (item) => {
       const target = targetsRef.current.get(item.id)
       if (!target) return
-      if (!target.url) {
+      if (!target.uploadUrl) {
         update(item.id, { status: 'duplicate', progress: 100, error: undefined })
         return
       }
@@ -128,7 +128,7 @@ export function useUploadQueue(objectId: string) {
           }))
         )
         const created = await packagesApi.create(objectId, { files })
-        packageId = created.packageId
+        packageId = created.package.id
         packageIdRef.current = packageId
         // Порядок uploads совпадает с порядком files в запросе
         created.uploads.forEach((target, i) => {

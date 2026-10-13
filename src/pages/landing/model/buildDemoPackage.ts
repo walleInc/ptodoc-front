@@ -10,6 +10,21 @@ function mapSeverity(s?: DemoFinding['severity']): Severity {
   return 'warning'
 }
 
+/** Браузер часто отдаёт пустой `file.type` — определяем по расширению для превью. */
+function guessMimeType(file: File): string {
+  if (file.type) return file.type
+  const name = file.name.toLowerCase()
+  if (name.endsWith('.pdf')) return 'application/pdf'
+  if (name.endsWith('.docx')) {
+    return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  }
+  if (name.endsWith('.xlsx')) {
+    return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  }
+  if (name.endsWith('.csv')) return 'text/csv'
+  return 'application/octet-stream'
+}
+
 /** Собирает PackageDetail из локальных файлов (для DocumentTree). */
 export function buildDemoPackage(files: File[], packageId = 'demo-pkg'): PackageDetail {
   const now = new Date().toISOString()
@@ -18,7 +33,7 @@ export function buildDemoPackage(files: File[], packageId = 'demo-pkg'): Package
     objectId: 'demo-object',
     packageId,
     fileName: file.name,
-    mimeType: file.type || 'application/octet-stream',
+    mimeType: guessMimeType(file),
     sizeBytes: file.size,
     type: 'unknown',
     status: 'done',
