@@ -64,7 +64,7 @@ export function ObjectsPage() {
 
   return (
     <div className="space-y-6">
-      <ObjectsPageHeader onCreate={() => navigate('/objects/new')} />
+      <ObjectsPageHeader canCreate={isOwner} onCreate={() => navigate('/objects/new')} />
 
       <Card>
         <CardContent className="p-0">
@@ -105,9 +105,11 @@ export function ObjectsPage() {
           ) : isEmpty && !hasFilters ? (
             <div className="py-12 text-center text-gray-500">
               <p>Объектов пока нет</p>
-              <Link to="/objects/new" className="text-primary-600 hover:underline mt-2 inline-block">
-                Создать первый объект
-              </Link>
+              {isOwner && (
+                <Link to="/objects/new" className="text-primary-600 hover:underline mt-2 inline-block">
+                  Создать первый объект
+                </Link>
+              )}
             </div>
           ) : (
             <ObjectsTable
@@ -117,6 +119,7 @@ export function ObjectsPage() {
               onOpenObject={(object) => navigate(`/objects/${object.id}`)}
               onEditObject={(object) => navigate(`/objects/${object.id}/edit`)}
               onArchiveObject={setObjectToArchive}
+              canEdit={isOwner}
               canArchive={isOwner}
               isLoading={isLoading}
               filters={filters}

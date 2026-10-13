@@ -11,6 +11,7 @@ interface ObjectsTableProps {
   onOpenObject: (object: ConstructionObject) => void
   onEditObject: (object: ConstructionObject) => void
   onArchiveObject: (object: ConstructionObject) => void
+  canEdit: boolean
   canArchive: boolean
   isLoading?: boolean
   filters: ObjectsFiltersState
@@ -31,6 +32,7 @@ export function ObjectsTable({
   onOpenObject,
   onEditObject,
   onArchiveObject,
+  canEdit,
   canArchive,
   isLoading,
   filters,
@@ -42,6 +44,7 @@ export function ObjectsTable({
     onOpenObject,
     onEditObject,
     onArchiveObject,
+    canEdit,
     canArchive,
     filters,
     onFiltersChange,

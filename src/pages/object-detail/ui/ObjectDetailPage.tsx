@@ -125,22 +125,23 @@ export function ObjectDetailPage() {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     К списку
                   </DropdownMenuItem>
-                  {!isArchived && (
+                  {isOwner && !isArchived && (
                     <DropdownMenuItem onClick={() => navigate(`/objects/${object.id}/edit`)}>
                       <Edit className="h-4 w-4 mr-2" />
                       Изменить
                     </DropdownMenuItem>
                   )}
-                  {transitions.length > 0 && <DropdownMenuSeparator />}
-                  {transitions.map((t) => (
-                    <DropdownMenuItem
-                      key={t.to}
-                      disabled={statusMutation.isPending}
-                      onClick={() => handleStatus(t.to)}
-                    >
-                      {t.label}
-                    </DropdownMenuItem>
-                  ))}
+                  {isOwner && transitions.length > 0 && <DropdownMenuSeparator />}
+                  {isOwner &&
+                    transitions.map((t) => (
+                      <DropdownMenuItem
+                        key={t.to}
+                        disabled={statusMutation.isPending}
+                        onClick={() => handleStatus(t.to)}
+                      >
+                        {t.label}
+                      </DropdownMenuItem>
+                    ))}
                   {isOwner && !isArchived && (
                     <>
                       <DropdownMenuSeparator />
