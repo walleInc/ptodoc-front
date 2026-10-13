@@ -5,8 +5,9 @@ on:
   push:
     branches: [dev, main, master]
 
+# push и pull_request не должны отменять друг друга (иначе deploy на VPS срывается)
 concurrency:
-  group: deploy-${{ github.repository }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
