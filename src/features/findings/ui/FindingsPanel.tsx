@@ -151,7 +151,11 @@ export function FindingsPanel({
         {ready && isLoading && <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary-600" />}
         {ready && error && (
           <Alert variant="destructive">
-            <AlertDescription>Не удалось загрузить замечания.</AlertDescription>
+            <AlertDescription>
+              {(error as { response?: { status?: number } }).response?.status === 501
+                ? 'Замечания пока недоступны: эндпоинт на бэкенде ещё не реализован.'
+                : 'Не удалось загрузить замечания.'}
+            </AlertDescription>
           </Alert>
         )}
         {ready && data && visible.length === 0 && (

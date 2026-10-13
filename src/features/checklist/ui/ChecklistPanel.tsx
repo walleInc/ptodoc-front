@@ -27,10 +27,15 @@ export function ChecklistPanel({ objectId, packageId, ready, provisional, onSele
   }
   if (isLoading) return <Loader2 className="mx-auto mt-6 h-6 w-6 animate-spin text-primary-600" />
   if (error || !data) {
+    const status = (error as { response?: { status?: number } } | null)?.response?.status
     return (
       <div className="p-3">
         <Alert variant="destructive">
-          <AlertDescription>Не удалось загрузить комплектность.</AlertDescription>
+          <AlertDescription>
+            {status === 501
+              ? 'Комплектность пока недоступна: эндпоинт на бэкенде ещё не реализован.'
+              : 'Не удалось загрузить комплектность.'}
+          </AlertDescription>
         </Alert>
       </div>
     )

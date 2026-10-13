@@ -3,7 +3,7 @@ import { Button } from '@/shared'
 
 export function ObjectsPageHeader({
   onCreate,
-  canCreate = true,
+  canCreate = false,
 }: {
   onCreate: () => void
   canCreate?: boolean
