@@ -144,23 +144,18 @@ export function PublicDemoFlow() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {used ? (
-        <Card>
-          <CardHeader>
-            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">Загрузка документов</h1>
-            <p className="text-sm text-gray-500">Демо · без регистрации</p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Alert>
-              <AlertDescription>
-                Бесплатный прогон в этом браузере уже использован. Оставьте заявку, чтобы проверить ещё
-                раз или сохранить результат в объект.
-              </AlertDescription>
-            </Alert>
-            <Button type="button" onClick={openLead}>
-              Оставить заявку
-            </Button>
-          </CardContent>
-        </Card>
+        <div className="rounded-xl border border-primary-200 bg-primary-50 p-6 sm:p-8">
+          <p className="text-xs font-medium uppercase tracking-wide text-primary-700">Демо исчерпано</p>
+          <h1 className="mt-2 text-xl font-bold text-primary-950 sm:text-2xl">
+            Бесплатная проверка в этом браузере уже использована
+          </h1>
+          <p className="mt-2 max-w-lg text-sm text-primary-900/80">
+            Оставьте заявку — подключим кабинет и полный объём проверок по объекту.
+          </p>
+          <Button type="button" className="mt-5" onClick={openLead}>
+            Оставить заявку
+          </Button>
+        </div>
       ) : (
         <Card>
           <CardHeader>

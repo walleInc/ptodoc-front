@@ -6,7 +6,7 @@ import type { PackageDetail } from '@/entities/package'
 import { DocumentStatusBadge } from '@/entities/package'
 import { DocumentTree, type PdfHighlight } from '@/features/review'
 import { FindingCard, SEVERITY_STYLES } from '@/features/findings'
-import { Alert, AlertDescription, Button, Card, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
+import { Button, Card, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
 import type { DemoCheckResult } from '../model/demoApi'
 import { buildDemoPackage, mapDemoFindingsToFindings } from '../model/buildDemoPackage'
 
@@ -160,17 +160,20 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
         </Button>
       </div>
 
-      {result.mock && !processing && (
-        <Alert>
-          <AlertDescription>
-            Показан демо-результат интерфейса. API <code className="text-xs">/public/demo/check</code> ещё не
-            ответил — когда бэкенд будет готов, здесь появятся живые замечания.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {!processing && result.disclaimer && (
-        <p className="text-xs text-gray-500">{result.disclaimer}</p>
+      {!processing && (
+        <div className="rounded-xl border border-primary-200 bg-primary-50 px-4 py-4 sm:px-5 sm:py-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0 space-y-1">
+              <p className="text-sm font-semibold text-primary-900">Демо-результат</p>
+              <p className="text-sm text-primary-800/90">
+                Это пример интерфейса. Чтобы проверить свои документы в кабинете — оставьте заявку.
+              </p>
+            </div>
+            <Button type="button" size="sm" className="shrink-0 self-start sm:self-center" onClick={onLead}>
+              Оставить заявку
+            </Button>
+          </div>
+        </div>
       )}
 
       <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">

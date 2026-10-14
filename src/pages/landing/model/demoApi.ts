@@ -22,7 +22,7 @@ export type DemoLeadPayload = {
 }
 
 const DEFAULT_DISCLAIMER =
-  'Замечания AI — рекомендация, не юридическое заключение. Для сохранения результата и проверки всего объекта оставьте заявку на подключение.'
+  'Это пример интерфейса. Чтобы проверить свои документы в кабинете — оставьте заявку.'
 
 function apiBase(): string {
   const raw = import.meta.env.VITE_API_URL || '/api'
@@ -57,14 +57,14 @@ export async function runPublicDemoCheck(files: File[]): Promise<DemoCheckResult
           id: 'mock-1',
           title: 'Дата АОСР позже записи в журнале работ',
           page: 2,
-          quote: 'Пример замечания (демо-UI без пайплайна на сервере).',
+          quote: 'Пример замечания для демонстрации интерфейса.',
           severity: 'warning',
         },
         {
           id: 'mock-2',
           title: 'Не заполнены обязательные поля подписи',
           page: 1,
-          quote: 'Подключите API /public/demo/check — здесь появится живой отчёт.',
+          quote: 'В полном кабинете здесь появятся живые замечания по вашим документам.',
           severity: 'error',
         },
       ],
@@ -72,18 +72,14 @@ export async function runPublicDemoCheck(files: File[]): Promise<DemoCheckResult
   }
 }
 
-/** Заготовка заявки. Успех при любом ответе сети или offline — UI не блокируем. */
+/** Отправка заявки на демо/подключение. При ошибке сети или не-OK ответе — бросает. */
 export async function submitPublicDemoLead(payload: DemoLeadPayload): Promise<{ ok: boolean }> {
-  try {
-    const response = await fetch(`${apiBase()}/public/demo/lead`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      credentials: 'omit',
-    })
-    if (!response.ok) throw new Error(`demo lead ${response.status}`)
-    return { ok: true }
-  } catch {
-    return { ok: true }
-  }
+  const response = await fetch(`${apiBase()}/public/demo/lead`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    credentials: 'omit',
+  })
+  if (!response.ok) throw new Error(`demo lead ${response.status}`)
+  return { ok: true }
 }

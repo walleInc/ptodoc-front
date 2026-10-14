@@ -75,7 +75,7 @@ export function mapDemoFindingsToFindings(
       severity,
       message: f.title,
       explanation: result.mock
-        ? 'Демо-результат интерфейса. Когда API /public/demo/check ответит — здесь появятся живые замечания.'
+        ? 'Демо-результат интерфейса. В кабинете здесь появятся замечания по вашим документам.'
         : null,
       sources: [
         {
