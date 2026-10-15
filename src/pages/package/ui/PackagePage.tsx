@@ -3,7 +3,13 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileDown, Loader2, MousePointerClick, Upload } from 'lucide-react'
 import { usePackage } from '@/features/upload'
-import { DocumentPreview, DocumentTree, ReviewWorkspace, type PdfHighlight } from '@/features/review'
+import {
+  A4PreviewFrame,
+  DocumentPreview,
+  DocumentTree,
+  ReviewWorkspace,
+  type PdfHighlight,
+} from '@/features/review'
 import { FindingsPanel, SEVERITY_STYLES, useFindings } from '@/features/findings'
 import type { Finding } from '@/entities/finding'
 import type { ExtractedField } from '@/entities/package'
@@ -136,14 +142,16 @@ export function PackagePage() {
           }
           center={
             selected ? (
-              <DocumentPreview
-                document={selected}
-                page={sourceOnPage?.page}
-                highlights={highlights}
-                activeHighlightId={selectedField ? `field:${selectedField.key}` : selectedFinding?.id}
-              />
+              <A4PreviewFrame>
+                <DocumentPreview
+                  document={selected}
+                  page={sourceOnPage?.page}
+                  highlights={highlights}
+                  activeHighlightId={selectedField ? `field:${selectedField.key}` : selectedFinding?.id}
+                />
+              </A4PreviewFrame>
             ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+              <div className="flex h-full flex-col items-center justify-center gap-2 bg-gray-200 p-6 text-center text-gray-500">
                 <MousePointerClick className="h-8 w-8" />
                 <p className="text-sm">Выберите документ в дереве слева</p>
               </div>
