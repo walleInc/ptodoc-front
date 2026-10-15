@@ -41,8 +41,8 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
           className={cn(
             'flex-shrink-0 border-b border-gray-200',
             collapsed
-              ? 'flex flex-col items-center gap-1 px-2 py-2'
-              : 'flex h-16 items-center gap-2 pl-2 pr-3'
+              ? 'flex flex-col items-center gap-1 pl-0 pr-2 py-2'
+              : 'flex h-16 items-center gap-2 pl-0 pr-3'
           )}
         >
           <Link
@@ -55,11 +55,11 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
           >
             <span
               className={cn(
-                'flex items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm',
+                'flex items-center justify-center overflow-hidden bg-white',
                 collapsed ? 'h-10 w-10' : 'h-9 w-9'
               )}
             >
-              <img src={logo} alt="" className="h-full w-full scale-125 object-cover" />
+              <img src={logo} alt="" className="h-full w-full object-cover" />
             </span>
             {!collapsed && (
               <span className="text-xl font-bold leading-none text-primary-600">ПТО-Doc</span>
