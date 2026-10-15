@@ -105,22 +105,11 @@ export function PackagePage() {
           К объекту
         </Button>
         {processing && progress !== undefined && (
-          <div className="flex min-w-48 flex-1 items-center gap-3 sm:max-w-sm">
+          <div className="ml-auto flex min-w-48 items-center gap-3 sm:max-w-sm">
             <Progress value={progress} />
             <span className="text-sm text-gray-500 tabular-nums">{progress}%</span>
           </div>
         )}
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto"
-          disabled={!finished}
-          title={finished ? undefined : 'Отчёт доступен, когда обработаны все документы пакета'}
-          onClick={() => setReportOpen(true)}
-        >
-          <FileDown className="h-4 w-4 mr-2" />
-          Отчёт
-        </Button>
       </div>
 
       <div className="min-h-0 flex-1 p-0">
@@ -161,42 +150,57 @@ export function PackagePage() {
             )
           }
           right={
-            <Tabs defaultValue="findings" className="flex h-full min-h-0 flex-col">
-              <TabsList className="m-3 mb-0 grid grid-cols-3">
-                <TabsTrigger value="findings">Замечания</TabsTrigger>
-                <TabsTrigger value="fields">Поля</TabsTrigger>
-                <TabsTrigger value="checklist">Комплект</TabsTrigger>
-              </TabsList>
-              <TabsContent value="findings" className="mt-0 min-h-0 flex-1">
-                <FindingsPanel
-                  objectId={id}
-                  packageId={packageId}
-                  documents={pkg.documents}
-                  ready={hasResults}
-                  processing={processing}
-                  selectedDocumentId={selected?.id}
-                  selectedFindingId={selectedFinding?.id}
-                  onSelectFinding={handleSelectFinding}
-                />
-              </TabsContent>
-              <TabsContent value="fields" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-                <FieldsPanel
-                  documentId={selected?.id}
-                  ready={selected?.status === 'done'}
-                  selectedKey={selectedField?.key}
-                  onSelectField={handleSelectField}
-                />
-              </TabsContent>
-              <TabsContent value="checklist" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-                <ChecklistPanel
-                  objectId={id}
-                  packageId={packageId}
-                  ready={hasResults}
-                  provisional={processing}
-                  onSelectDocument={(docId) => setSearchParams({ doc: docId }, { replace: true })}
-                />
-              </TabsContent>
-            </Tabs>
+            <div className="flex h-full min-h-0 flex-col">
+              <Tabs defaultValue="findings" className="flex min-h-0 flex-1 flex-col">
+                <TabsList className="m-3 mb-0 grid grid-cols-3">
+                  <TabsTrigger value="findings">Замечания</TabsTrigger>
+                  <TabsTrigger value="fields">Поля</TabsTrigger>
+                  <TabsTrigger value="checklist">Комплект</TabsTrigger>
+                </TabsList>
+                <TabsContent value="findings" className="mt-0 min-h-0 flex-1">
+                  <FindingsPanel
+                    objectId={id}
+                    packageId={packageId}
+                    documents={pkg.documents}
+                    ready={hasResults}
+                    processing={processing}
+                    selectedDocumentId={selected?.id}
+                    selectedFindingId={selectedFinding?.id}
+                    onSelectFinding={handleSelectFinding}
+                  />
+                </TabsContent>
+                <TabsContent value="fields" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+                  <FieldsPanel
+                    documentId={selected?.id}
+                    ready={selected?.status === 'done'}
+                    selectedKey={selectedField?.key}
+                    onSelectField={handleSelectField}
+                  />
+                </TabsContent>
+                <TabsContent value="checklist" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+                  <ChecklistPanel
+                    objectId={id}
+                    packageId={packageId}
+                    ready={hasResults}
+                    provisional={processing}
+                    onSelectDocument={(docId) => setSearchParams({ doc: docId }, { replace: true })}
+                  />
+                </TabsContent>
+              </Tabs>
+              <div className="shrink-0 border-t border-gray-200 p-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  disabled={!finished}
+                  title={finished ? undefined : 'Отчёт доступен, когда обработаны все документы пакета'}
+                  onClick={() => setReportOpen(true)}
+                >
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Отчёт
+                </Button>
+              </div>
+            </div>
           }
         />
       </div>
