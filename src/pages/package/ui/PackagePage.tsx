@@ -98,8 +98,8 @@ export function PackagePage() {
   const progress = pkg.progress !== undefined ? Math.round(pkg.progress * 100) : undefined
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="-m-4 flex h-[calc(100vh-3.5rem)] flex-col sm:-m-6 sm:h-[calc(100vh-4rem)] lg:-m-8">
+      <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-3 py-2 sm:px-4">
         <Button variant="outline" size="sm" onClick={() => navigate(`/objects/${id}`)}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           К объекту
@@ -129,8 +129,8 @@ export function PackagePage() {
         </Button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
-        <Card className="max-h-64 overflow-y-auto p-2 lg:max-h-[calc(100vh-13rem)]">
+      <div className="min-h-0 flex-1 grid gap-0 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
+        <Card className="min-h-0 overflow-y-auto p-2">
           <DocumentTree
             pkg={pkg}
             selectedId={selected?.id}
@@ -138,7 +138,7 @@ export function PackagePage() {
           />
         </Card>
 
-        <Card className="h-[70vh] overflow-hidden lg:h-[calc(100vh-13rem)]">
+        <Card className="min-h-0 overflow-hidden">
           {selected ? (
             <DocumentPreview
               document={selected}
@@ -154,7 +154,7 @@ export function PackagePage() {
           )}
         </Card>
 
-        <Card className="h-[60vh] overflow-hidden lg:col-span-2 xl:col-span-1 xl:h-[calc(100vh-13rem)]">
+        <Card className="min-h-0 overflow-hidden lg:col-span-2 xl:col-span-1">
           <Tabs defaultValue="findings" className="flex h-full min-h-0 flex-col">
             <TabsList className="m-3 mb-0 grid grid-cols-3">
               <TabsTrigger value="findings">Замечания</TabsTrigger>
