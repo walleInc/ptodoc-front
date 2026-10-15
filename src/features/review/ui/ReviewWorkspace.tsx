@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { cn } from '@/shared/lib/utils'
 
 const DEFAULT_LEFT = 210
@@ -54,13 +54,13 @@ function ResizeGutter({
       role="separator"
       aria-orientation="vertical"
       tabIndex={0}
-      className="relative z-10 w-px shrink-0 cursor-col-resize bg-gray-200 hover:bg-primary-500 active:bg-primary-600 after:absolute after:inset-y-0 after:-left-1.5 after:w-3 after:content-['']"
+      className="relative z-10 hidden w-px shrink-0 cursor-col-resize bg-gray-200 hover:bg-primary-500 active:bg-primary-600 after:absolute after:inset-y-0 after:-left-1.5 after:w-3 after:content-[''] lg:block"
       onMouseDown={onMouseDown}
     />
   )
 }
 
-/** Единый 3-колоночный shell проверки с drag-разделителями. */
+/** Единый 3-колоночный shell проверки с drag-разделителями (desktop); на mobile — вертикальный стек. */
 export function ReviewWorkspace({
   left,
   center,
@@ -99,20 +99,29 @@ export function ReviewWorkspace({
     setRightWidth(Math.max(MIN_PANE, rightOrigin.current - dx))
   }, [])
 
+  const leftStyle = { '--rw-left': `${leftWidth}px` } as CSSProperties
+  const rightStyle = { '--rw-right': `${rightWidth}px` } as CSSProperties
+
   return (
     <div
       className={cn(
-        'flex h-full min-h-0 w-full overflow-hidden rounded-lg border border-gray-200 bg-white',
+        'flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white lg:flex-row',
         className
       )}
     >
-      <aside className="flex min-h-0 shrink-0 flex-col bg-white" style={{ width: leftWidth }}>
+      <aside
+        className="flex min-h-0 w-full max-h-[26%] shrink-0 flex-col border-b border-gray-200 bg-white lg:max-h-none lg:w-[var(--rw-left)] lg:shrink-0 lg:border-b-0"
+        style={leftStyle}
+      >
         {left}
       </aside>
       <ResizeGutter onDragStart={startLeft} onDrag={dragLeft} />
-      <section className="flex min-h-0 min-w-0 flex-1 flex-col">{center}</section>
+      <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{center}</section>
       <ResizeGutter onDragStart={startRight} onDrag={dragRight} />
-      <aside className="flex min-h-0 shrink-0 flex-col bg-white" style={{ width: rightWidth }}>
+      <aside
+        className="flex min-h-0 w-full max-h-[30%] shrink-0 flex-col border-t border-gray-200 bg-white lg:max-h-none lg:w-[var(--rw-right)] lg:shrink-0 lg:border-t-0"
+        style={rightStyle}
+      >
         {right}
       </aside>
     </div>
