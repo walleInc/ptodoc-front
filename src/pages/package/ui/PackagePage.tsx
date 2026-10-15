@@ -121,24 +121,28 @@ export function PackagePage() {
           <FileDown className="h-4 w-4 mr-2" />
           Отчёт
         </Button>
-        <Button asChild size="sm">
-          <Link to={`/objects/${id}/upload`}>
-            <Upload className="h-4 w-4 mr-2" />
-            Загрузить ещё
-          </Link>
-        </Button>
       </div>
 
       <div className="min-h-0 flex-1 p-0">
         <ReviewWorkspace
           className="rounded-none border-0 border-t"
           left={
-            <div className="min-h-0 flex-1 overflow-y-auto p-2">
-              <DocumentTree
-                pkg={pkg}
-                selectedId={selected?.id}
-                onSelect={(docId) => setSearchParams({ doc: docId }, { replace: true })}
-              />
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="min-h-0 flex-1 overflow-y-auto p-2">
+                <DocumentTree
+                  pkg={pkg}
+                  selectedId={selected?.id}
+                  onSelect={(docId) => setSearchParams({ doc: docId }, { replace: true })}
+                />
+              </div>
+              <div className="shrink-0 border-t border-gray-200 p-2">
+                <Button asChild size="sm" className="w-full">
+                  <Link to={`/objects/${id}/upload`}>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Загрузить ещё
+                  </Link>
+                </Button>
+              </div>
             </div>
           }
           center={
