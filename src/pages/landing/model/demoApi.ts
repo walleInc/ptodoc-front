@@ -83,3 +83,21 @@ export async function submitPublicDemoLead(payload: DemoLeadPayload): Promise<{ 
   if (!response.ok) throw new Error(`demo lead ${response.status}`)
   return { ok: true }
 }
+
+export type ContactLeadPayload = {
+  name: string
+  email: string
+  message: string
+}
+
+/** Заявка из футера лендинга. При ошибке сети или не-OK ответе — бросает. */
+export async function submitContactLead(payload: ContactLeadPayload): Promise<{ ok: boolean }> {
+  const response = await fetch(`${apiBase()}/public/contact`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    credentials: 'omit',
+  })
+  if (!response.ok) throw new Error(`contact lead ${response.status}`)
+  return { ok: true }
+}
