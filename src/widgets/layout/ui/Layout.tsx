@@ -27,7 +27,9 @@ export function Layout() {
             : 'lg:pl-64 flex h-dvh flex-col overflow-hidden min-w-0 transition-[padding] duration-300'
         }
       >
-        <Header onMenuClick={() => setMobileOpen(true)} />
+        <div className="shrink-0">
+          <Header onMenuClick={() => setMobileOpen(true)} />
+        </div>
         <main
           className={cn(
             'flex min-h-0 min-w-0 flex-1 flex-col',
