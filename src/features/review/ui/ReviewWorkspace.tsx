@@ -54,7 +54,7 @@ function ResizeGutter({
       role="separator"
       aria-orientation="vertical"
       tabIndex={0}
-      className="w-1 shrink-0 cursor-col-resize bg-gray-200 hover:bg-primary-500 active:bg-primary-600"
+      className="relative z-10 w-px shrink-0 cursor-col-resize bg-gray-200 hover:bg-primary-500 active:bg-primary-600 after:absolute after:inset-y-0 after:-left-1.5 after:w-3 after:content-['']"
       onMouseDown={onMouseDown}
     />
   )
@@ -106,7 +106,7 @@ export function ReviewWorkspace({
         className
       )}
     >
-      <aside className="flex min-h-0 shrink-0 flex-col bg-gray-50" style={{ width: leftWidth }}>
+      <aside className="flex min-h-0 shrink-0 flex-col bg-white" style={{ width: leftWidth }}>
         {left}
       </aside>
       <ResizeGutter onDragStart={startLeft} onDrag={dragLeft} />
