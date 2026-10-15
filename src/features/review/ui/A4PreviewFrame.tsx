@@ -12,10 +12,10 @@ export function A4PreviewFrame({ children, className }: A4PreviewFrameProps) {
     <div className={cn('flex h-full min-h-0 flex-col bg-gray-200', className)}>
       <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden p-2">
         <div
-          className="flex h-full max-h-full w-auto max-w-full flex-col bg-white shadow-lg"
+          className="flex max-h-full w-full flex-col bg-white shadow-lg lg:h-full lg:w-auto lg:max-w-full"
           style={{ aspectRatio: '210 / 297' }}
         >
-          <div className="min-h-0 flex-1 overflow-hidden">{children}</div>
+          <div className="min-h-0 flex-1 overflow-auto lg:overflow-hidden">{children}</div>
         </div>
       </div>
     </div>
