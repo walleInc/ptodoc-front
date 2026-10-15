@@ -147,6 +147,44 @@
       </aside>
     </div>
   </div>
-  <!-- JS resize: отдельный коммит -->
+  <script>
+    document.querySelectorAll('.gutter').forEach((gutter) => {
+      gutter.addEventListener('mousedown', (e) => {
+        const leftEl = document.getElementById(gutter.dataset.left)
+        const rightEl = document.getElementById(gutter.dataset.right)
+        const startX = e.clientX
+        const leftStart = leftEl.getBoundingClientRect().width
+        const rightStart = rightEl.getBoundingClientRect().width
+        gutter.classList.add('dragging')
+        const onMove = (ev) => {
+          const dx = ev.clientX - startX
+          const min = 160
+          let lw = leftStart + dx
+          let rw = rightStart - dx
+          if (lw < min) { rw -= min - lw; lw = min }
+          if (rw < min) { lw -= min - rw; rw = min }
+          if (leftEl.id === 'paneCenter') {
+            leftEl.style.flex = 'none'
+            leftEl.style.width = lw + 'px'
+          } else {
+            leftEl.style.width = lw + 'px'
+          }
+          if (rightEl.id === 'paneCenter') {
+            rightEl.style.flex = '1 1 auto'
+            rightEl.style.width = 'auto'
+          } else {
+            rightEl.style.width = rw + 'px'
+          }
+        }
+        const onUp = () => {
+          gutter.classList.remove('dragging')
+          window.removeEventListener('mousemove', onMove)
+          window.removeEventListener('mouseup', onUp)
+        }
+        window.addEventListener('mousemove', onMove)
+        window.addEventListener('mouseup', onUp)
+      })
+    })
+  </script>
 </body>
 </html>
