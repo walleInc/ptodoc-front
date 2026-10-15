@@ -3,7 +3,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, FileDown, Loader2, MousePointerClick, Upload } from 'lucide-react'
 import { usePackage } from '@/features/upload'
-import { DocumentPreview, DocumentTree, type PdfHighlight } from '@/features/review'
+import { DocumentPreview, DocumentTree, ReviewWorkspace, type PdfHighlight } from '@/features/review'
 import { FindingsPanel, SEVERITY_STYLES, useFindings } from '@/features/findings'
 import type { Finding } from '@/entities/finding'
 import type { ExtractedField } from '@/entities/package'
@@ -12,7 +12,7 @@ const FIELD_HIGHLIGHT_COLOR = 'rgba(99, 102, 241, 0.3)'
 import { ChecklistPanel } from '@/features/checklist'
 import { ReportDialog } from '@/features/reports'
 import { FieldsPanel, useDocumentDetail } from '@/features/fields'
-import { Alert, AlertDescription, Button, Card, Progress, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared'
+import { Alert, AlertDescription, Button, Progress, Tabs, TabsContent, TabsList, TabsTrigger } from '@/shared'
 
 /** Рабочая область пакета: дерево документов, просмотр оригинала и панель замечаний с подсветкой на странице. */
 export function PackagePage() {
@@ -129,69 +129,72 @@ export function PackagePage() {
         </Button>
       </div>
 
-      <div className="min-h-0 flex-1 grid gap-0 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
-        <Card className="min-h-0 overflow-y-auto p-2">
-          <DocumentTree
-            pkg={pkg}
-            selectedId={selected?.id}
-            onSelect={(docId) => setSearchParams({ doc: docId }, { replace: true })}
-          />
-        </Card>
-
-        <Card className="min-h-0 overflow-hidden">
-          {selected ? (
-            <DocumentPreview
-              document={selected}
-              page={sourceOnPage?.page}
-              highlights={highlights}
-              activeHighlightId={selectedField ? `field:${selectedField.key}` : selectedFinding?.id}
-            />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
-              <MousePointerClick className="h-8 w-8" />
-              <p className="text-sm">Выберите документ в дереве слева</p>
+      <div className="min-h-0 flex-1 p-0">
+        <ReviewWorkspace
+          className="rounded-none border-0 border-t"
+          left={
+            <div className="min-h-0 flex-1 overflow-y-auto p-2">
+              <DocumentTree
+                pkg={pkg}
+                selectedId={selected?.id}
+                onSelect={(docId) => setSearchParams({ doc: docId }, { replace: true })}
+              />
             </div>
-          )}
-        </Card>
-
-        <Card className="min-h-0 overflow-hidden lg:col-span-2 xl:col-span-1">
-          <Tabs defaultValue="findings" className="flex h-full min-h-0 flex-col">
-            <TabsList className="m-3 mb-0 grid grid-cols-3">
-              <TabsTrigger value="findings">Замечания</TabsTrigger>
-              <TabsTrigger value="fields">Поля</TabsTrigger>
-              <TabsTrigger value="checklist">Комплект</TabsTrigger>
-            </TabsList>
-            <TabsContent value="findings" className="mt-0 min-h-0 flex-1">
-              <FindingsPanel
-                objectId={id}
-                packageId={packageId}
-                documents={pkg.documents}
-                ready={hasResults}
-                processing={processing}
-                selectedDocumentId={selected?.id}
-                selectedFindingId={selectedFinding?.id}
-                onSelectFinding={handleSelectFinding}
+          }
+          center={
+            selected ? (
+              <DocumentPreview
+                document={selected}
+                page={sourceOnPage?.page}
+                highlights={highlights}
+                activeHighlightId={selectedField ? `field:${selectedField.key}` : selectedFinding?.id}
               />
-            </TabsContent>
-            <TabsContent value="fields" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-              <FieldsPanel
-                documentId={selected?.id}
-                ready={selected?.status === 'done'}
-                selectedKey={selectedField?.key}
-                onSelectField={handleSelectField}
-              />
-            </TabsContent>
-            <TabsContent value="checklist" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-              <ChecklistPanel
-                objectId={id}
-                packageId={packageId}
-                ready={hasResults}
-                provisional={processing}
-                onSelectDocument={(docId) => setSearchParams({ doc: docId }, { replace: true })}
-              />
-            </TabsContent>
-          </Tabs>
-        </Card>
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+                <MousePointerClick className="h-8 w-8" />
+                <p className="text-sm">Выберите документ в дереве слева</p>
+              </div>
+            )
+          }
+          right={
+            <Tabs defaultValue="findings" className="flex h-full min-h-0 flex-col">
+              <TabsList className="m-3 mb-0 grid grid-cols-3">
+                <TabsTrigger value="findings">Замечания</TabsTrigger>
+                <TabsTrigger value="fields">Поля</TabsTrigger>
+                <TabsTrigger value="checklist">Комплект</TabsTrigger>
+              </TabsList>
+              <TabsContent value="findings" className="mt-0 min-h-0 flex-1">
+                <FindingsPanel
+                  objectId={id}
+                  packageId={packageId}
+                  documents={pkg.documents}
+                  ready={hasResults}
+                  processing={processing}
+                  selectedDocumentId={selected?.id}
+                  selectedFindingId={selectedFinding?.id}
+                  onSelectFinding={handleSelectFinding}
+                />
+              </TabsContent>
+              <TabsContent value="fields" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+                <FieldsPanel
+                  documentId={selected?.id}
+                  ready={selected?.status === 'done'}
+                  selectedKey={selectedField?.key}
+                  onSelectField={handleSelectField}
+                />
+              </TabsContent>
+              <TabsContent value="checklist" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+                <ChecklistPanel
+                  objectId={id}
+                  packageId={packageId}
+                  ready={hasResults}
+                  provisional={processing}
+                  onSelectDocument={(docId) => setSearchParams({ doc: docId }, { replace: true })}
+                />
+              </TabsContent>
+            </Tabs>
+          }
+        />
       </div>
 
       <ReportDialog packageId={packageId} open={reportOpen} onClose={() => setReportOpen(false)} />
