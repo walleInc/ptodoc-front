@@ -292,39 +292,49 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col">
-      <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-3 py-2">
-        {processing && progress !== undefined && (
+      {processing && progress !== undefined && (
+        <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-3 py-2">
           <div className="flex min-w-48 flex-1 items-center gap-3 sm:max-w-sm">
             <Progress value={progress} />
             <span className="text-sm text-gray-500 tabular-nums">{progress}%</span>
           </div>
-        )}
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto"
-          disabled={processing}
-          onClick={onLead}
-          title="Отчёт и сохранение — по заявке на подключение"
-        >
-          <FileDown className="mr-2 h-4 w-4" />
-          Отчёт
-        </Button>
-        <Button size="sm" onClick={onLead}>
-          <Upload className="mr-2 h-4 w-4" />
-          Проверить ещё
-        </Button>
-      </div>
+        </div>
+      )}
       <div className="min-h-0 flex-1">
         <ReviewWorkspace
           className="rounded-none border-0 border-t"
           left={
-            <div className="min-h-0 flex-1 overflow-y-auto p-2">
-              <DocumentTree pkg={pkg} selectedId={selected?.id} onSelect={setSelectedDocId} />
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="min-h-0 flex-1 overflow-y-auto p-2">
+                <DocumentTree pkg={pkg} selectedId={selected?.id} onSelect={setSelectedDocId} />
+              </div>
+              <div className="shrink-0 border-t border-gray-200 p-2">
+                <Button size="sm" className="w-full" onClick={onLead}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Проверить ещё
+                </Button>
+              </div>
             </div>
           }
           center={centerPane}
-          right={rightPane}
+          right={
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="min-h-0 flex-1">{rightPane}</div>
+              <div className="shrink-0 border-t border-gray-200 p-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  disabled={processing}
+                  onClick={onLead}
+                  title="Отчёт и сохранение — по заявке на подключение"
+                >
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Отчёт
+                </Button>
+              </div>
+            </div>
+          }
         />
       </div>
     </div>
