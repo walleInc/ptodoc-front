@@ -43,8 +43,8 @@ export function Layout() {
         <SheetContent side="left" hideClose className="w-[min(100%,16rem)] p-0 sm:w-64">
           <div className="flex items-center justify-between h-14 sm:h-16 pl-0 pr-3 sm:pr-4 border-b border-gray-200">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden bg-white">
-                <img src={logo} alt="" className="h-full w-full object-cover" />
+              <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden bg-white sm:h-16 sm:w-16">
+                <img src={logo} alt="" className="h-full w-full scale-150 object-cover" />
               </span>
               <span className="text-lg sm:text-xl font-bold text-primary-600 truncate">ПТО-Doc</span>
             </div>

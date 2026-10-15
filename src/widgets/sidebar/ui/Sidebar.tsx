@@ -55,11 +55,11 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
           >
             <span
               className={cn(
-                'flex items-center justify-center overflow-hidden bg-white',
-                collapsed ? 'h-10 w-10' : 'h-9 w-9'
+                'flex shrink-0 items-center justify-center overflow-hidden bg-white',
+                collapsed ? 'h-14 w-14' : 'h-16 w-16'
               )}
             >
-              <img src={logo} alt="" className="h-full w-full object-cover" />
+              <img src={logo} alt="" className="h-full w-full scale-150 object-cover" />
             </span>
             {!collapsed && (
               <span className="text-xl font-bold leading-none text-primary-600">ПТО-Doc</span>
