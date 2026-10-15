@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ПТО-Doc — макет проверки (3 панели)</title>
+  <!-- CSS: следующий коммит -->
+</head>
+<body>
+  <header class="app-bar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <span class="brand-name">ПТО-Doc</span>
+    </div>
+    <div class="spacer"></div>
+    <span class="user">owner@pto.example.com</span>
+  </header>
+
+  <div class="workspace-wrap">
+    <div class="workspace" id="workspace">
+      <aside class="pane pane-left" id="paneLeft">
+        <div class="pane-head">
+          <span>Документы</span>
+          <span class="grow"></span>
+          <span class="count">3</span>
+        </div>
+        <div class="pane-body doc-list">
+          <div class="doc-item active">
+            <span class="dot warn"></span>
+            <div>
+              <div>АОСР_монолит_ось_А-Б.pdf</div>
+              <div class="meta">Обработан · 2 замечания</div>
+            </div>
+          </div>
+          <div class="doc-item">
+            <span class="dot"></span>
+            <div>
+              <div>Журнал_бетонных_работ.pdf</div>
+              <div class="meta">Обработан · 0 замечаний</div>
+            </div>
+          </div>
+          <div class="doc-item">
+            <span class="dot warn"></span>
+            <div>
+              <div>Паспорт_арматура.pdf</div>
+              <div class="meta">Обработан · 1 замечание</div>
+            </div>
+          </div>
+        </div>
+        <div class="left-actions">
+          <button class="btn btn-primary" type="button">+ Проверить ещё</button>
+        </div>
+      </aside>
+
+      <div class="gutter" data-left="paneLeft" data-right="paneCenter"></div>
+
+      <section class="pane pane-center" id="paneCenter">
+        <div class="preview-toolbar">
+          <span class="title">АОСР_монолит_ось_А-Б.pdf</span>
+          <span class="badge">Готово</span>
+        </div>
+        <div class="pdf-stage">
+          <div class="pdf-page a4">
+            <h2>Акт освидетельствования скрытых работ</h2>
+            <p>Объект: МКД …</p>
+            <p>Дата: <span class="hl">12.03.2026</span></p>
+            <p>Работы: монолитная плита перекрытия</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="gutter" data-left="paneCenter" data-right="paneRight"></div>
+
+      <aside class="pane pane-right" id="paneRight">
+        <div class="tabs">
+          <button class="tab active" type="button">Замечания</button>
+          <button class="tab" type="button">Поля</button>
+          <button class="tab" type="button">Комплект</button>
+        </div>
+        <div class="pane-body">
+          <div class="finding selected">
+            <div class="sev warning">Предупреждение</div>
+            <div>Дата АОСР позже записи в журнале работ</div>
+          </div>
+          <div class="finding">
+            <div class="sev error">Ошибка</div>
+            <div>Не заполнены обязательные поля подписи</div>
+          </div>
+        </div>
+        <div class="right-foot">
+          <button class="btn btn-sm" type="button">Отчёт</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <!-- JS resize: отдельный коммит -->
+</body>
+</html>
