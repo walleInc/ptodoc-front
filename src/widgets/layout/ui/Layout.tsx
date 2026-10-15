@@ -35,7 +35,7 @@ export function Layout() {
       {/* Мобильный сайдбар (оверлей, только < lg) */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" hideClose className="w-[min(100%,16rem)] p-0 sm:w-64">
-          <div className="flex items-center justify-between h-14 sm:h-16 px-3 sm:px-4 border-b border-gray-200">
+          <div className="flex items-center justify-between h-14 sm:h-16 pl-2 pr-3 sm:pl-2 sm:pr-4 border-b border-gray-200">
             <div className="flex items-center gap-2 min-w-0">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
                 <img src={logo} alt="" className="h-full w-full scale-125 object-cover" />
