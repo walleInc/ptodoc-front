@@ -17,17 +17,17 @@ export function Layout() {
   }, [location.pathname])
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-dvh overflow-hidden bg-gray-50">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((prev) => !prev)} />
       <div
         className={
           sidebarCollapsed
-            ? 'lg:pl-20 flex flex-col min-h-screen min-w-0 transition-[padding] duration-300'
-            : 'lg:pl-64 flex flex-col min-h-screen min-w-0 transition-[padding] duration-300'
+            ? 'lg:pl-20 flex h-dvh flex-col overflow-hidden min-w-0 transition-[padding] duration-300'
+            : 'lg:pl-64 flex h-dvh flex-col overflow-hidden min-w-0 transition-[padding] duration-300'
         }
       >
         <Header onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+        <main className="flex min-h-0 min-w-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
