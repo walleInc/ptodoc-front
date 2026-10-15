@@ -10,8 +10,8 @@ export function DemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <header className="border-b border-gray-200 bg-white">
+    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
+      <header className="sticky top-0 z-40 shrink-0 border-b border-gray-200 bg-white">
         <div className="container-main flex h-16 items-center">
           <Link to="/" className="flex items-center gap-2" aria-label="ПТО-Doc, на главную">
             <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
@@ -21,7 +21,7 @@ export function DemoPage() {
           </Link>
         </div>
       </header>
-      <main className="px-3 py-6 sm:px-6 lg:px-8 sm:py-8">
+      <main className="flex flex-1 flex-col">
         <PublicDemoFlow />
       </main>
     </div>
