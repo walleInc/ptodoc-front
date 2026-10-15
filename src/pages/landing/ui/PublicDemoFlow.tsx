@@ -171,7 +171,7 @@ export function PublicDemoFlow() {
           </h1>
 
           <p className="mt-4 max-w-lg text-base leading-relaxed text-primary-900/80">
-            Один бесплатный прогон доступен один раз. Оставьте заявку — подключим кабинет и полный объём проверок по
+            Бесплатная проверка доступна один раз. Оставьте заявку — подключим кабинет и полный объём проверок по
             объекту.
           </p>
 
@@ -206,7 +206,7 @@ export function PublicDemoFlow() {
         <div className="text-center">
           <h1 className="text-2xl font-bold tracking-tight text-primary-950 sm:text-3xl">Загрузка документов</h1>
           <p className="mt-2 text-sm text-primary-800/90">
-            Демо · без регистрации · один бесплатный прогон
+            Демо · без регистрации · одна бесплатная проверка
           </p>
         </div>
 

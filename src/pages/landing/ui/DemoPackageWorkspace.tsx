@@ -160,22 +160,6 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
         </Button>
       </div>
 
-      {!processing && (
-        <div className="rounded-xl border border-primary-200 bg-primary-50 px-4 py-4 sm:px-5 sm:py-5">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0 space-y-1">
-              <p className="text-sm font-semibold text-primary-900">Демо-результат</p>
-              <p className="text-sm text-primary-800/90">
-                Это пример интерфейса. Чтобы проверить свои документы в кабинете — оставьте заявку.
-              </p>
-            </div>
-            <Button type="button" size="sm" className="shrink-0 self-start sm:self-center" onClick={onLead}>
-              Оставить заявку
-            </Button>
-          </div>
-        </div>
-      )}
-
       <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
         <Card className="max-h-64 overflow-y-auto p-2 lg:max-h-[calc(100vh-13rem)]">
           <DocumentTree pkg={pkg} selectedId={selected?.id} onSelect={setSelectedDocId} />

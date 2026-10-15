@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'pto_public_demo_used'
 
-/** Один бесплатный успешный прогон на браузер (localStorage). */
+/** Одна бесплатная успешная проверка на браузер (localStorage). */
 export function hasUsedPublicDemo(): boolean {
   try {
     return localStorage.getItem(STORAGE_KEY) === '1'
