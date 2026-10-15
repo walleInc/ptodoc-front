@@ -1,9 +1,22 @@
-import { useCallback, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { cn } from '@/shared/lib/utils'
 
 const DEFAULT_LEFT = 210
 const DEFAULT_RIGHT = 290
 const MIN_PANE = 160
+const STORAGE_KEY = 'pto_review_workspace_widths'
+
+function readStoredWidths(): { left: number; right: number } | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { left?: number; right?: number }
+    if (typeof parsed.left !== 'number' || typeof parsed.right !== 'number') return null
+    return { left: parsed.left, right: parsed.right }
+  } catch {
+    return null
+  }
+}
 
 export interface ReviewWorkspaceProps {
   left: ReactNode
@@ -56,10 +69,19 @@ export function ReviewWorkspace({
   leftWidth: leftProp = DEFAULT_LEFT,
   rightWidth: rightProp = DEFAULT_RIGHT,
 }: ReviewWorkspaceProps) {
-  const [leftWidth, setLeftWidth] = useState(leftProp)
-  const [rightWidth, setRightWidth] = useState(rightProp)
+  const stored = readStoredWidths()
+  const [leftWidth, setLeftWidth] = useState(stored?.left ?? leftProp)
+  const [rightWidth, setRightWidth] = useState(stored?.right ?? rightProp)
   const leftOrigin = useRef(leftWidth)
   const rightOrigin = useRef(rightWidth)
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ left: leftWidth, right: rightWidth }))
+    } catch {
+      /* ignore quota / private mode */
+    }
+  }, [leftWidth, rightWidth])
 
   const startLeft = useCallback(() => {
     leftOrigin.current = leftWidth
