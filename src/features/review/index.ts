@@ -1,5 +1,7 @@
 export { DocumentTree } from './ui/DocumentTree'
 export { DocumentPreview } from './ui/DocumentPreview'
 export { PdfViewer } from './ui/PdfViewer'
+export { ReviewWorkspace } from './ui/ReviewWorkspace'
 export { groupDocumentsByType } from './model/groupDocuments'
 export type { PdfHighlight } from './ui/PdfViewer'
+export type { ReviewWorkspaceProps } from './ui/ReviewWorkspace'
