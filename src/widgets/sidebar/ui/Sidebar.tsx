@@ -42,7 +42,7 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
             'flex-shrink-0 border-b border-gray-200',
             collapsed
               ? 'flex flex-col items-center gap-1 px-2 py-2'
-              : 'flex h-16 items-center gap-2 px-3'
+              : 'flex h-16 items-center gap-2 pl-2 pr-3'
           )}
         >
           <Link
