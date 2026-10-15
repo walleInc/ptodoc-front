@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Viewer, Worker, type RenderPageProps } from '@react-pdf-viewer/core'
+import { SpecialZoomLevel, Viewer, Worker, type RenderPageProps } from '@react-pdf-viewer/core'
 import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation'
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url'
 import '@react-pdf-viewer/core/lib/styles/index.css'
@@ -64,14 +64,17 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
   )
 
   return (
-    <Worker workerUrl={workerUrl}>
-      <Viewer
-        key={fileUrl}
-        fileUrl={fileUrl}
-        initialPage={page ? page - 1 : 0}
-        plugins={[navigation]}
-        renderPage={renderPage}
-      />
-    </Worker>
+    <div className="h-full min-h-0">
+      <Worker workerUrl={workerUrl}>
+        <Viewer
+          key={fileUrl}
+          fileUrl={fileUrl}
+          defaultScale={SpecialZoomLevel.PageWidth}
+          initialPage={page ? page - 1 : 0}
+          plugins={[navigation]}
+          renderPage={renderPage}
+        />
+      </Worker>
+    </div>
   )
 }
