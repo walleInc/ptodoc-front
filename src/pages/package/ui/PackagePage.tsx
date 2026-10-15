@@ -104,7 +104,7 @@ export function PackagePage() {
   const progress = pkg.progress !== undefined ? Math.round(pkg.progress * 100) : undefined
 
   return (
-    <div className="-m-4 flex h-[calc(100%+2rem)] flex-col overflow-hidden sm:-m-6 sm:h-[calc(100%+3rem)] lg:-m-8 lg:h-[calc(100%+4rem)]">
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <div className="flex flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-3 py-2 sm:px-4">
         <Button variant="outline" size="sm" onClick={() => navigate(`/objects/${id}`)}>
           <ArrowLeft className="h-4 w-4 mr-2" />

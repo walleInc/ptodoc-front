@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { X } from 'lucide-react'
-import { Sheet, SheetContent, Button } from '@/shared'
+import { Sheet, SheetContent, Button, cn } from '@/shared'
 import { Sidebar } from '@/widgets/sidebar'
 import { Header } from '@/widgets/header'
 import logo from '@/assets/logo-pto-doc.jpg'
@@ -10,6 +10,7 @@ export function Layout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const isPackageReview = /\/objects\/[^/]+\/packages\/[^/]+/.test(location.pathname)
 
   // Закрывать мобильное меню при смене маршрута
   useEffect(() => {
@@ -27,7 +28,12 @@ export function Layout() {
         }
       >
         <Header onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex min-h-0 min-w-0 flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main
+          className={cn(
+            'flex min-h-0 min-w-0 flex-1 flex-col',
+            isPackageReview ? 'overflow-hidden p-0' : 'overflow-y-auto p-4 sm:p-6 lg:p-8'
+          )}
+        >
           <Outlet />
         </main>
       </div>
