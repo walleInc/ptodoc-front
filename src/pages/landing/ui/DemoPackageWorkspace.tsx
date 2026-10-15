@@ -4,7 +4,7 @@ import type { Finding } from '@/entities/finding'
 import { SEVERITY_LABELS, SEVERITY_ORDER, type Severity } from '@/entities/finding'
 import type { PackageDetail } from '@/entities/package'
 import { DocumentStatusBadge } from '@/entities/package'
-import { DocumentTree, ReviewWorkspace, type PdfHighlight } from '@/features/review'
+import { A4PreviewFrame, DocumentTree, ReviewWorkspace, type PdfHighlight } from '@/features/review'
 import { FindingCard, SEVERITY_STYLES } from '@/features/findings'
 import { Button, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
 import type { DemoCheckResult } from '../model/demoApi'
@@ -316,7 +316,7 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
               </div>
             </div>
           }
-          center={centerPane}
+          center={<A4PreviewFrame>{centerPane}</A4PreviewFrame>}
           right={
             <div className="flex h-full min-h-0 flex-col">
               <div className="min-h-0 flex-1">{rightPane}</div>
