@@ -39,42 +39,59 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
       {!embedded && (
         <div
           className={cn(
-            'flex-shrink-0 border-b border-gray-200',
+            'relative flex-shrink-0 border-b border-gray-200',
             collapsed
-              ? 'flex flex-col items-center gap-1 px-2 py-2'
-              : 'flex h-16 items-center gap-2 px-3'
+              ? 'flex flex-col items-center gap-1 pl-0 pr-2 py-2'
+              : 'flex h-16 items-center pr-3'
           )}
         >
           <Link
             to="/dashboard"
             aria-label="На главную"
             className={cn(
-              'flex items-center gap-2 shrink-0',
-              collapsed && 'justify-center'
+              'flex items-center shrink-0',
+              collapsed ? 'justify-center' : 'absolute left-0 top-0 h-16 w-16'
             )}
           >
             <span
               className={cn(
-                'flex items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm',
-                collapsed ? 'h-10 w-10' : 'h-9 w-9'
+                'flex shrink-0 items-center justify-center overflow-hidden bg-white',
+                collapsed ? 'h-14 w-14' : 'h-16 w-16'
               )}
             >
-              <img src={logo} alt="" className="h-full w-full scale-125 object-cover" />
+              <img
+                src={logo}
+                alt=""
+                className="h-full w-full scale-150 object-cover object-left"
+              />
             </span>
-            {!collapsed && (
-              <span className="text-xl font-bold leading-none text-primary-600">ПТО-Doc</span>
-            )}
           </Link>
-          {!collapsed && <div className="flex-1" />}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 shrink-0 text-gray-500 hover:text-gray-900"
-            onClick={onToggle}
-            aria-label={collapsed ? 'Развернуть сайдбар' : 'Свернуть сайдбар'}
-          >
-            <ToggleIcon className="h-5 w-5" />
-          </Button>
+          {!collapsed && (
+            <>
+              <span className="ml-16 text-xl font-bold leading-none text-primary-600">ПТО-Doc</span>
+              <div className="flex-1" />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 shrink-0 text-gray-500 hover:text-gray-900"
+                onClick={onToggle}
+                aria-label="Свернуть сайдбар"
+              >
+                <ToggleIcon className="h-5 w-5" />
+              </Button>
+            </>
+          )}
+          {collapsed && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0 text-gray-500 hover:text-gray-900"
+              onClick={onToggle}
+              aria-label="Развернуть сайдбар"
+            >
+              <ToggleIcon className="h-5 w-5" />
+            </Button>
+          )}
         </div>
       )}
       <nav className={cn('flex-1 py-4 space-y-1 overflow-y-auto scrollbar-thin', collapsed ? 'px-2.5' : 'px-3')}>
