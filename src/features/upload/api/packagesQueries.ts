@@ -6,6 +6,7 @@ import {
   FINISHED_PACKAGE_STATUSES,
   LAST_STAGE,
   PACKAGE_EVENT_TYPES,
+  type Package,
   type PackageDetail,
   type PackageEvent,
 } from '@/entities/package'
@@ -16,7 +17,17 @@ const ACTIVE_STATUSES = ['uploading', 'queued', 'processing']
 const POLL_MS = 1500
 const POLL_WHEN_LIVE_MS = 10_000 // страховка, пока SSE подключён
 
+const packagesListKey = (objectId: string) => ['objects', objectId, 'packages'] as const
 const packageKey = (packageId: string) => ['packages', packageId] as const
+
+/** Список пакетов объекта (новые сверху). */
+export function usePackages(objectId: string) {
+  return useQuery<Package[], AxiosError>({
+    queryKey: packagesListKey(objectId),
+    queryFn: () => packagesApi.list(objectId),
+    enabled: !!objectId,
+  })
+}
 
 /**
  * Состояние пакета: прогресс приходит по SSE, а пока поток не подключён

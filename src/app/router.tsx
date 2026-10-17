@@ -5,6 +5,7 @@ import { TooltipProvider } from '@/shared'
 import { Layout } from '@/widgets'
 import { useAuthStore } from '@/features/auth'
 import { ProtectedRoute } from './ProtectedRoute'
+import { OwnerRoute } from './OwnerRoute'
 import { LoginPage } from '@/pages/login'
 import { DashboardPage } from '@/pages/dashboard'
 import { ObjectsPage } from '@/pages/objects'
@@ -50,9 +51,23 @@ export function AppRouter() {
             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/objects" element={<ObjectsPage />} />
-              <Route path="/objects/new" element={<ObjectCreatePage />} />
+              <Route
+                path="/objects/new"
+                element={
+                  <OwnerRoute>
+                    <ObjectCreatePage />
+                  </OwnerRoute>
+                }
+              />
               <Route path="/objects/:id" element={<ObjectDetailPage />} />
-              <Route path="/objects/:id/edit" element={<ObjectEditPage />} />
+              <Route
+                path="/objects/:id/edit"
+                element={
+                  <OwnerRoute>
+                    <ObjectEditPage />
+                  </OwnerRoute>
+                }
+              />
               <Route path="/objects/:id/upload" element={<UploadPage />} />
               <Route path="/objects/:id/packages/:packageId" element={<PackagePage />} />
               <Route path="/profile" element={<ProfilePage />} />

@@ -54,16 +54,18 @@ export interface Package {
 
 export interface UploadTarget {
   documentId: string
+  fileName: string
   /** Временная ссылка для PUT в хранилище. null — файл дубликат, загружать не нужно */
-  url: string | null
-  objectKey: string | null
+  uploadUrl: string | null
+  /** Заголовки, которые нужно передать при PUT (например Content-Type) */
+  headers?: Record<string, string>
+  expiresAt?: string
   /** Документ с тем же sha256 уже есть в организации */
   duplicateOf?: string | null
 }
 
 export interface PackageCreated {
-  packageId: string
-  version: number
+  package: Package
   /** Порядок совпадает с порядком files в запросе */
   uploads: UploadTarget[]
 }

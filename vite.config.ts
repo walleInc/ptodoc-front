@@ -6,6 +6,9 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   server: {
+    // На Windows с нерабочим IPv6 loopback localhost резолвится в ::1 и браузер
+    // не достучится до сервера — держим привязку на IPv4- loopback.
+    host: '127.0.0.1',
     // Same-origin /api → бэк (cookie-сессия без CORS). Порт бэка: VITE_PROXY_TARGET
     proxy: {
       '/api': {

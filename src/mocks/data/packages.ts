@@ -19,9 +19,16 @@ interface MockPackage {
   startedAt?: number
 }
 
+interface MockFileBody {
+  body: ArrayBuffer
+  contentType: string
+}
+
 const packages = new Map<string, MockPackage>()
 const knownHashes = new Map<string, string>() // sha256 → documentId
 const uploaded = new Set<string>()
+/** Байты, принятые через PUT /api/__mocks__/upload/:documentId */
+const fileBodies = new Map<string, MockFileBody>()
 
 const STAGES: Stage[] = ['extract', 'classify', 'parse', 'rules', 'explain']
 const PROCESS_MS = 6000
@@ -50,6 +57,7 @@ export function createMockPackage(objectId: string, body: PackageCreate): Packag
   }
   const documents: PackageDocument[] = []
   const uploads: PackageCreated['uploads'] = []
+  const expiresAt = new Date(Date.now() + 15 * 60_000).toISOString()
 
   for (const f of body.files) {
     const duplicateOf = f.sha256 ? (knownHashes.get(f.sha256) ?? null) : null
@@ -75,14 +83,42 @@ export function createMockPackage(objectId: string, body: PackageCreate): Packag
     }
     uploads.push({
       documentId,
-      url: duplicateOf ? null : `/api/__mocks__/upload/${documentId}`,
-      objectKey: duplicateOf ? null : `${pkg.id}/${documentId}/${f.fileName}`,
+      fileName: f.fileName,
+      uploadUrl: duplicateOf ? null : `/api/__mocks__/upload/${documentId}`,
+      headers: duplicateOf ? undefined : { 'Content-Type': f.mimeType },
+      expiresAt: duplicateOf ? undefined : expiresAt,
       duplicateOf,
     })
   }
 
   packages.set(pkg.id, { pkg, documents })
-  return { packageId: pkg.id, version, uploads }
+  return { package: pkg, uploads }
+}
+
+/** Сохраняет тело PUT и помечает документ загруженным. */
+export function storeMockUploadedFile(
+  documentId: string,
+  body: ArrayBuffer,
+  contentType: string
+): boolean {
+  if (!markMockUploaded(documentId)) return false
+  fileBodies.set(documentId, { body, contentType })
+  return true
+}
+
+export function getMockFileBody(documentId: string): MockFileBody | null {
+  return fileBodies.get(documentId) ?? null
+}
+
+/** Signed-URL-like ответ для GET /documents/:id/file. */
+export function getMockDocumentFile(documentId: string): { url: string; expiresAt: string } | null {
+  if (!getMockDocument(documentId)) return null
+  const expiresAt = new Date(Date.now() + 15 * 60_000).toISOString()
+  if (fileBodies.has(documentId)) {
+    return { url: `/api/__mocks__/files/${documentId}`, expiresAt }
+  }
+  // Документ без локального тела (дубликат / старый мок) — тестовый PDF
+  return { url: '/mock-docs/sample.pdf', expiresAt }
 }
 
 export function markMockUploaded(documentId: string): boolean {
@@ -151,6 +187,24 @@ export function getMockPackage(packageId: string): PackageDetail | null {
   return p ? computeMockPackage(p) : null
 }
 
+/** Список пакетов объекта (новые сверху), как GET /objects/:id/packages. */
+export function listMockPackages(objectId: string): Package[] {
+  return [...packages.values()]
+    .filter((p) => p.pkg.objectId === objectId)
+    .map((p) => {
+      const detail = computeMockPackage(p)
+      return {
+        id: detail.id,
+        objectId: detail.objectId,
+        version: detail.version,
+        status: detail.status,
+        progress: detail.progress,
+        createdAt: detail.createdAt,
+      }
+    })
+    .sort((a, b) => b.version - a.version)
+}
+
 /** Документы пакета, по которым обработка завершена (для списка замечаний). */
 export function doneMockDocumentIds(packageId: string): string[] | null {
   const pkg = getMockPackage(packageId)
@@ -205,4 +259,5 @@ export function resetMockPackages() {
   packages.clear()
   uploaded.clear()
   knownHashes.clear()
+  fileBodies.clear()
 }

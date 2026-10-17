@@ -4,6 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { CheckCircle2, Clock, Mail, MapPin } from 'lucide-react'
 import { Button, Input, Label, Textarea } from '@/shared'
+import { submitContactLead } from '../model/demoApi'
+
+const CONTACT_EMAIL = 'info@pto-doc.ru'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Укажите имя'),
@@ -16,6 +19,7 @@ type ContactFormData = z.infer<typeof contactSchema>
 /** Подвал: форма связи, контакты, копирайт. */
 export function LandingFooter() {
   const [sent, setSent] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const {
     register,
@@ -27,11 +31,19 @@ export function LandingFooter() {
     defaultValues: { name: '', email: '', message: '' },
   })
 
-  const onSubmit = async (_data: ContactFormData) => {
-    // Заявка пока никуда не отправляется: бэкенд-эндпоинта для лидов нет.
-    await new Promise((resolve) => setTimeout(resolve, 600))
-    setSent(true)
-    reset()
+  const onSubmit = async (data: ContactFormData) => {
+    setSubmitError(null)
+    try {
+      await submitContactLead({
+        name: data.name.trim(),
+        email: data.email.trim(),
+        message: data.message.trim(),
+      })
+      setSent(true)
+      reset()
+    } catch {
+      setSubmitError('Не удалось отправить. Попробуйте ещё раз или напишите на почту.')
+    }
   }
 
   return (
@@ -57,7 +69,9 @@ export function LandingFooter() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-800 text-primary-300">
                   <Mail className="h-4 w-4" />
                 </span>
-                <a href="mailto:info@pto-doc.ru" className="hover:text-white">info@pto-doc.ru</a>
+                <a href={`mailto:${CONTACT_EMAIL}`} className="hover:text-white">
+                  {CONTACT_EMAIL}
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-800 text-primary-300">
@@ -73,18 +87,27 @@ export function LandingFooter() {
             {sent ? (
               <div className="flex h-full min-h-[16rem] flex-col items-center justify-center text-center">
                 <CheckCircle2 className="h-12 w-12 text-primary-400" />
-                <p className="mt-4 text-lg font-semibold text-white">Сообщение отправлено</p>
+                <p className="mt-4 text-lg font-semibold text-white">Заявка принята</p>
                 <p className="mt-2 max-w-xs text-sm text-primary-200">
                   Спасибо! Мы свяжемся с вами в ближайшее рабочее время.
                 </p>
-                <Button variant="outline" className="mt-6" onClick={() => setSent(false)}>
-                  Отправить ещё одно
+                <Button
+                  variant="outline"
+                  className="mt-6"
+                  onClick={() => {
+                    setSent(false)
+                    setSubmitError(null)
+                  }}
+                >
+                  Отправить ещё одну
                 </Button>
               </div>
             ) : (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
                 <div className="space-y-2">
-                  <Label htmlFor="contact-name" className="text-primary-100">Имя</Label>
+                  <Label htmlFor="contact-name" className="text-primary-100">
+                    Имя
+                  </Label>
                   <Input
                     id="contact-name"
                     placeholder="Иван Иванов"
@@ -95,7 +118,9 @@ export function LandingFooter() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contact-email" className="text-primary-100">Email</Label>
+                  <Label htmlFor="contact-email" className="text-primary-100">
+                    Email
+                  </Label>
                   <Input
                     id="contact-email"
                     type="email"
@@ -107,7 +132,9 @@ export function LandingFooter() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="contact-message" className="text-primary-100">Сообщение</Label>
+                  <Label htmlFor="contact-message" className="text-primary-100">
+                    Сообщение
+                  </Label>
                   <Textarea
                     id="contact-message"
                     placeholder="Опишите вашу задачу: тип объектов, объём документации…"
@@ -117,6 +144,14 @@ export function LandingFooter() {
                     {...register('message')}
                   />
                 </div>
+                {submitError && (
+                  <p className="text-sm text-red-300">
+                    {submitError}{' '}
+                    <a href={`mailto:${CONTACT_EMAIL}`} className="underline hover:text-white">
+                      {CONTACT_EMAIL}
+                    </a>
+                  </p>
+                )}
                 <Button type="submit" className="w-full" size="lg" loading={isSubmitting}>
                   Отправить заявку
                 </Button>

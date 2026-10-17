@@ -67,8 +67,7 @@ export function DemoLeadModal({ open, onOpenChange }: DemoLeadModalProps) {
         <DialogHeader>
           <DialogTitle>Оставить заявку на подключение</DialogTitle>
           <DialogDescription>
-            Бесплатный прогон уже использован. Оставьте контакты — подключим кабинет и полный
-            объём проверок по объекту.
+            Оставьте контакты — подключим кабинет и полный объём проверок по объекту.
           </DialogDescription>
         </DialogHeader>
 

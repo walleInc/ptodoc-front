@@ -5,8 +5,9 @@ on:
   push:
     branches: [dev, main, master]
 
+# push и pull_request не должны отменять друг друга (иначе deploy на VPS срывается)
 concurrency:
-  group: deploy-${{ github.repository }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -24,7 +25,10 @@ jobs:
       - run: npm run lint
       - run: npm run build   # tsc -b && vite build
         env:
-          VITE_API_URL: https://api.ptodoc.space
+          VITE_USE_MOCKS: "false"
+          # Nest globalPrefix = api → baseURL должен включать /api
+          VITE_API_URL: https://api.ptodoc.space/api
+          VITE_PUBLIC_DEMO_ENABLED: "true"
       - uses: actions/upload-artifact@v4
         if: github.event_name == 'push'
         with: { name: dist, path: dist, retention-days: 1 }

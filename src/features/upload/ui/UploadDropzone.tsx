@@ -8,6 +8,8 @@ interface UploadDropzoneProps {
   /** MIME / extensions for input accept, e.g. ".pdf,application/pdf" */
   accept?: string
   hint?: string
+  /** Дополнительные классы контейнера (например, увеличенные отступы в демо) */
+  className?: string
 }
 
 const DEFAULT_ACCEPT = '.pdf,.docx,.xlsx,.csv'
@@ -18,6 +20,7 @@ export function UploadDropzone({
   disabled,
   accept = DEFAULT_ACCEPT,
   hint = DEFAULT_HINT,
+  className,
 }: UploadDropzoneProps) {
   // Формат проверяем сами в useUploadQueue, чтобы показать причину отказа по каждому файлу
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -31,7 +34,8 @@ export function UploadDropzone({
       className={cn(
         'flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors cursor-pointer',
         isDragActive ? 'border-primary-500 bg-primary-50' : 'border-gray-300 bg-white hover:bg-gray-50',
-        disabled && 'pointer-events-none opacity-50'
+        disabled && 'pointer-events-none opacity-50',
+        className
       )}
     >
       <input {...getInputProps({ accept })} />

@@ -18,7 +18,8 @@ export interface ObjectsColumnActions {
   onOpenObject: (object: ConstructionObject) => void
   onEditObject: (object: ConstructionObject) => void
   onArchiveObject: (object: ConstructionObject) => void
-  /** Архивировать может только owner */
+  /** Изменить / архивировать — только owner (как на бэке) */
+  canEdit: boolean
   canArchive: boolean
   filters: ObjectsFiltersState
   onFiltersChange: (filters: Partial<ObjectsFiltersState>) => void
@@ -42,6 +43,7 @@ export function useObjectsColumns({
   onOpenObject: _onOpenObject,
   onEditObject,
   onArchiveObject,
+  canEdit,
   canArchive,
   filters,
   onFiltersChange,
@@ -144,7 +146,7 @@ export function useObjectsColumns({
         const isArchived = row.original.status === 'archived'
         return (
           <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
-            {!isArchived && (
+            {canEdit && !isArchived && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button

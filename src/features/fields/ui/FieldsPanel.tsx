@@ -19,10 +19,15 @@ export function FieldsPanel({ documentId, ready, selectedKey, onSelectField }: F
   if (!ready) return <Empty>Поля появятся после обработки документа</Empty>
   if (isLoading) return <Loader2 className="mx-auto mt-6 h-6 w-6 animate-spin text-primary-600" />
   if (error || !document) {
+    const status = (error as { response?: { status?: number } } | null)?.response?.status
     return (
       <div className="p-3">
         <Alert variant="destructive">
-          <AlertDescription>Не удалось загрузить поля документа.</AlertDescription>
+          <AlertDescription>
+            {status === 501
+              ? 'Поля пока недоступны: эндпоинт на бэкенде ещё не реализован.'
+              : 'Не удалось загрузить поля документа.'}
+          </AlertDescription>
         </Alert>
       </div>
     )

@@ -6,9 +6,15 @@ import { Card, CardHeader, CardTitle, CardContent, Skeleton } from '@/shared'
 interface DashboardRecentObjectsProps {
   objects: ConstructionObject[]
   isLoading?: boolean
+  /** Создавать объекты может только owner */
+  canCreate?: boolean
 }
 
-export function DashboardRecentObjects({ objects, isLoading }: DashboardRecentObjectsProps) {
+export function DashboardRecentObjects({
+  objects,
+  isLoading,
+  canCreate = false,
+}: DashboardRecentObjectsProps) {
   return (
     <Card className="min-w-0 w-full">
       <CardHeader>
@@ -24,9 +30,11 @@ export function DashboardRecentObjects({ objects, isLoading }: DashboardRecentOb
         ) : objects.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <p>Объектов пока нет</p>
-            <Link to="/objects/new" className="text-primary-600 hover:underline mt-2 inline-block">
-              Создать первый объект
-            </Link>
+            {canCreate && (
+              <Link to="/objects/new" className="text-primary-600 hover:underline mt-2 inline-block">
+                Создать первый объект
+              </Link>
+            )}
           </div>
         ) : (
           <div className="space-y-3">

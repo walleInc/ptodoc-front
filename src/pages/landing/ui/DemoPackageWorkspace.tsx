@@ -6,7 +6,7 @@ import type { PackageDetail } from '@/entities/package'
 import { DocumentStatusBadge } from '@/entities/package'
 import { DocumentTree, type PdfHighlight } from '@/features/review'
 import { FindingCard, SEVERITY_STYLES } from '@/features/findings'
-import { Alert, AlertDescription, Button, Card, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
+import { Button, Card, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
 import type { DemoCheckResult } from '../model/demoApi'
 import { buildDemoPackage, mapDemoFindingsToFindings } from '../model/buildDemoPackage'
 
@@ -160,19 +160,6 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
         </Button>
       </div>
 
-      {result.mock && !processing && (
-        <Alert>
-          <AlertDescription>
-            Показан демо-результат интерфейса. API <code className="text-xs">/public/demo/check</code> ещё не
-            ответил — когда бэкенд будет готов, здесь появятся живые замечания.
-          </AlertDescription>
-        </Alert>
-      )}
-
-      {!processing && result.disclaimer && (
-        <p className="text-xs text-gray-500">{result.disclaimer}</p>
-      )}
-
       <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
         <Card className="max-h-64 overflow-y-auto p-2 lg:max-h-[calc(100vh-13rem)]">
           <DocumentTree pkg={pkg} selectedId={selected?.id} onSelect={setSelectedDocId} />
@@ -211,6 +198,12 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
                   <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
                     <FileQuestion className="h-10 w-10" />
                     <p className="text-sm">Предпросмотр доступен только для PDF.</p>
+                  </div>
+                )}
+                {!processing && !fileUrl && (
+                  <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+                    <FileQuestion className="h-10 w-10" />
+                    <p className="text-sm">Файл недоступен для предпросмотра.</p>
                   </div>
                 )}
               </div>
