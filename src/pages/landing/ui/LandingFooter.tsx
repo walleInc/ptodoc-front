@@ -6,7 +6,7 @@ import { CheckCircle2, Clock, Mail, MapPin } from 'lucide-react'
 import { Button, Input, Label, Textarea } from '@/shared'
 import { submitContactLead } from '../model/demoApi'
 
-const CONTACT_EMAIL = 'info@pto-doc.ru'
+const CONTACT_EMAIL = 'pto-doc.ru@mail.ru'
 
 const contactSchema = z.object({
   name: z.string().min(2, 'Укажите имя'),

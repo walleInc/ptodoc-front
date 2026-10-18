@@ -46,8 +46,8 @@ export function LandingHeader() {
           className="flex cursor-pointer items-center gap-2"
           aria-label="ПТО-Doc, на главную"
         >
-          <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
-            <img src={logo} alt="" className="h-full w-full scale-125 object-cover" />
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
+            <img src={logo} alt="" className="h-full w-full object-contain object-left" />
           </span>
           <span
             className={
@@ -61,19 +61,23 @@ export function LandingHeader() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className={
-                scrolled
-                  ? 'text-sm font-medium text-gray-600 hover:text-primary-700 transition-colors'
-                  : 'text-sm font-medium text-white/80 hover:text-white transition-colors'
-              }
-            >
-              {link.label}
-            </a>
-          ))}
+          {links.map((link) => {
+            const className = scrolled
+              ? 'text-sm font-medium text-gray-600 hover:text-primary-700 transition-colors'
+              : 'text-sm font-medium text-white/80 hover:text-white transition-colors'
+            if (link.href.startsWith('#')) {
+              return (
+                <a key={link.href} href={link.href} className={className}>
+                  {link.label}
+                </a>
+              )
+            }
+            return (
+              <Link key={link.href} to={link.href} className={className}>
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="hidden md:block">
@@ -99,16 +103,32 @@ export function LandingHeader() {
       {mobileOpen && (
         <div className="md:hidden bg-white border-b border-gray-200 shadow-lg">
           <nav className="container-main flex flex-col gap-1 py-4">
-            {links.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700"
-              >
-                {link.label}
-              </a>
-            ))}
+            {links.map((link) => {
+              const className =
+                'px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-700'
+              if (link.href.startsWith('#')) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className={className}
+                  >
+                    {link.label}
+                  </a>
+                )
+              }
+              return (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={className}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
             <Button asChild className="mt-2">
               <Link to="/login" onClick={() => setMobileOpen(false)}>
                 Войти

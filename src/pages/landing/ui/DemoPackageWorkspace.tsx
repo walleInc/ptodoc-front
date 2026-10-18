@@ -4,9 +4,9 @@ import type { Finding } from '@/entities/finding'
 import { SEVERITY_LABELS, SEVERITY_ORDER, type Severity } from '@/entities/finding'
 import type { PackageDetail } from '@/entities/package'
 import { DocumentStatusBadge } from '@/entities/package'
-import { DocumentTree, type PdfHighlight } from '@/features/review'
+import { A4PreviewFrame, DocumentTree, ReviewWorkspace, type PdfHighlight } from '@/features/review'
 import { FindingCard, SEVERITY_STYLES } from '@/features/findings'
-import { Button, Card, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
+import { Button, Progress, Tabs, TabsContent, TabsList, TabsTrigger, cn } from '@/shared'
 import type { DemoCheckResult } from '../model/demoApi'
 import { buildDemoPackage, mapDemoFindingsToFindings } from '../model/buildDemoPackage'
 
@@ -134,196 +134,208 @@ export function DemoPackageWorkspace({ files, result, progress, onLead }: DemoPa
     </div>
   )
 
+  const centerPane = selected ? (
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-2">
+        <h2 className="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">{selected.fileName}</h2>
+        <DocumentStatusBadge status={selected.status} />
+      </div>
+      <div className="min-h-0 flex-1 overflow-hidden bg-gray-100">
+        {processing && (
+          <div className="flex h-full items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+          </div>
+        )}
+        {!processing && fileUrl && isPdf && (
+          <Suspense
+            fallback={
+              <div className="flex h-full items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+              </div>
+            }
+          >
+            <PdfViewer
+              fileUrl={fileUrl}
+              page={page}
+              highlights={highlights}
+              activeHighlightId={selectedFinding?.id}
+            />
+          </Suspense>
+        )}
+        {!processing && fileUrl && !isPdf && (
+          <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+            <FileQuestion className="h-10 w-10" />
+            <p className="text-sm">Предпросмотр доступен только для PDF.</p>
+          </div>
+        )}
+        {!processing && !fileUrl && (
+          <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+            <FileQuestion className="h-10 w-10" />
+            <p className="text-sm">Файл недоступен для предпросмотра.</p>
+          </div>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
+      <MousePointerClick className="h-8 w-8" />
+      <p className="text-sm">Выберите документ в дереве слева</p>
+    </div>
+  )
+
+  const rightPane = (
+    <Tabs defaultValue="findings" className="flex h-full min-h-0 flex-col">
+      <TabsList className="m-3 mb-0 grid grid-cols-3">
+        <TabsTrigger value="findings">Замечания</TabsTrigger>
+        <TabsTrigger value="fields">Поля</TabsTrigger>
+        <TabsTrigger value="checklist">Комплект</TabsTrigger>
+      </TabsList>
+      <TabsContent value="findings" className="mt-0 min-h-0 flex-1">
+        <section aria-label="Замечания" className="flex h-full min-h-0 flex-col">
+          <div className="space-y-2 border-b border-gray-200 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <h2 className="text-sm font-semibold text-gray-900">Замечания</h2>
+              <div className="inline-flex rounded-md border border-gray-200 text-xs" role="group">
+                {(['open', 'all'] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    aria-pressed={statusView === v}
+                    onClick={() => setStatusView(v)}
+                    className={cn(
+                      'px-2 py-1 first:rounded-l-md last:rounded-r-md',
+                      statusView === v ? 'bg-gray-900 text-white' : 'hover:bg-gray-100'
+                    )}
+                  >
+                    {v === 'open' ? 'Открытые' : 'Все'}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {selectedDocId && (
+              <div className="inline-flex rounded-md border border-gray-200 text-xs" role="group">
+                {(['document', 'package'] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    aria-pressed={scope === v}
+                    onClick={() => setScope(v)}
+                    className={cn(
+                      'px-2 py-1 first:rounded-l-md last:rounded-r-md',
+                      scope === v ? 'bg-gray-900 text-white' : 'hover:bg-gray-100'
+                    )}
+                  >
+                    {v === 'document' ? 'Этот документ' : 'Весь пакет'}
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="flex flex-wrap gap-1.5">
+              {SEVERITY_ORDER.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  aria-pressed={severities.includes(s)}
+                  onClick={() => toggleSeverity(s)}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs',
+                    severities.includes(s) ? SEVERITY_STYLES[s].chip : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                  )}
+                >
+                  <span className={cn('h-2 w-2 rounded-full', SEVERITY_STYLES[s].dot)} />
+                  {SEVERITY_LABELS[s]}
+                  <span className="tabular-nums">{counts[s]}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="min-h-0 flex-1 overflow-y-auto p-3">
+            {processing && (
+              <p className="flex items-center gap-2 text-sm text-gray-500">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Идёт обработка — замечания появятся, как только будет готов первый документ.
+              </p>
+            )}
+            {!processing && visible.length === 0 && (
+              <div className="flex flex-col items-center gap-2 py-8 text-center text-sm text-gray-500">
+                <ShieldCheck className="h-8 w-8 text-green-600" />
+                Замечаний нет
+              </div>
+            )}
+            <ul className="space-y-2">
+              {visible.map((f) => (
+                <FindingCard
+                  key={f.id}
+                  finding={f}
+                  selected={f.id === selectedFindingId}
+                  documentName={effectiveScope === 'package' ? documentNames.get(f.documentId) : undefined}
+                  onSelect={() => {
+                    setSelectedFindingId(f.id)
+                    setSelectedDocId(f.documentId)
+                  }}
+                  onDecide={(status) => decide(f, status)}
+                  onDismiss={onLead}
+                />
+              ))}
+            </ul>
+          </div>
+        </section>
+      </TabsContent>
+      <TabsContent value="fields" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+        {cabinetStub}
+      </TabsContent>
+      <TabsContent value="checklist" className="mt-0 min-h-0 flex-1 overflow-y-auto">
+        {cabinetStub}
+      </TabsContent>
+    </Tabs>
+  )
+
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-3">
-        {processing && progress !== undefined && (
+    <div className="flex h-full min-h-0 flex-col overflow-hidden">
+      {processing && progress !== undefined && (
+        <div className="flex shrink-0 flex-wrap items-center gap-3 border-b border-gray-200 bg-white px-3 py-2">
           <div className="flex min-w-48 flex-1 items-center gap-3 sm:max-w-sm">
             <Progress value={progress} />
             <span className="text-sm text-gray-500 tabular-nums">{progress}%</span>
           </div>
-        )}
-        <Button
-          variant="outline"
-          size="sm"
-          className="ml-auto"
-          disabled={processing}
-          onClick={onLead}
-          title="Отчёт и сохранение — по заявке на подключение"
-        >
-          <FileDown className="h-4 w-4 mr-2" />
-          Отчёт
-        </Button>
-        <Button size="sm" onClick={onLead}>
-          <Upload className="h-4 w-4 mr-2" />
-          Проверить ещё
-        </Button>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-[16rem_minmax(0,1fr)] xl:grid-cols-[16rem_minmax(0,1fr)_22rem]">
-        <Card className="max-h-64 overflow-y-auto p-2 lg:max-h-[calc(100vh-13rem)]">
-          <DocumentTree pkg={pkg} selectedId={selected?.id} onSelect={setSelectedDocId} />
-        </Card>
-
-        <Card className="h-[70vh] overflow-hidden lg:h-[calc(100vh-13rem)]">
-          {selected ? (
+        </div>
+      )}
+      <div className="min-h-0 h-0 flex-1 overflow-hidden">
+        <ReviewWorkspace
+          className="h-full rounded-none border-0 border-t"
+          left={
             <div className="flex h-full min-h-0 flex-col">
-              <div className="flex items-center gap-3 border-b border-gray-200 px-4 py-2">
-                <h2 className="min-w-0 flex-1 truncate text-sm font-medium text-gray-900">{selected.fileName}</h2>
-                <DocumentStatusBadge status={selected.status} />
+              <div className="min-h-0 flex-1 overflow-y-auto p-2">
+                <DocumentTree pkg={pkg} selectedId={selected?.id} onSelect={setSelectedDocId} />
               </div>
-              <div className="min-h-0 flex-1 overflow-hidden bg-gray-100">
-                {processing && (
-                  <div className="flex h-full items-center justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
-                  </div>
-                )}
-                {!processing && fileUrl && isPdf && (
-                  <Suspense
-                    fallback={
-                      <div className="flex h-full items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
-                      </div>
-                    }
-                  >
-                    <PdfViewer
-                      fileUrl={fileUrl}
-                      page={page}
-                      highlights={highlights}
-                      activeHighlightId={selectedFinding?.id}
-                    />
-                  </Suspense>
-                )}
-                {!processing && fileUrl && !isPdf && (
-                  <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
-                    <FileQuestion className="h-10 w-10" />
-                    <p className="text-sm">Предпросмотр доступен только для PDF.</p>
-                  </div>
-                )}
-                {!processing && !fileUrl && (
-                  <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
-                    <FileQuestion className="h-10 w-10" />
-                    <p className="text-sm">Файл недоступен для предпросмотра.</p>
-                  </div>
-                )}
+              <div className="shrink-0 border-t border-gray-200 p-2">
+                <Button size="sm" className="w-full" onClick={onLead}>
+                  <Upload className="mr-2 h-4 w-4" />
+                  Проверить ещё
+                </Button>
               </div>
             </div>
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-gray-500">
-              <MousePointerClick className="h-8 w-8" />
-              <p className="text-sm">Выберите документ в дереве слева</p>
+          }
+          center={<A4PreviewFrame>{centerPane}</A4PreviewFrame>}
+          right={
+            <div className="flex h-full min-h-0 flex-col">
+              <div className="min-h-0 flex-1">{rightPane}</div>
+              <div className="shrink-0 border-t border-gray-200 p-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  disabled={processing}
+                  onClick={onLead}
+                  title="Отчёт и сохранение — по заявке на подключение"
+                >
+                  <FileDown className="mr-2 h-4 w-4" />
+                  Отчёт
+                </Button>
+              </div>
             </div>
-          )}
-        </Card>
-
-        <Card className="h-[60vh] overflow-hidden lg:col-span-2 xl:col-span-1 xl:h-[calc(100vh-13rem)]">
-          <Tabs defaultValue="findings" className="flex h-full min-h-0 flex-col">
-            <TabsList className="m-3 mb-0 grid grid-cols-3">
-              <TabsTrigger value="findings">Замечания</TabsTrigger>
-              <TabsTrigger value="fields">Поля</TabsTrigger>
-              <TabsTrigger value="checklist">Комплект</TabsTrigger>
-            </TabsList>
-            <TabsContent value="findings" className="mt-0 min-h-0 flex-1">
-              <section aria-label="Замечания" className="flex h-full min-h-0 flex-col">
-                <div className="space-y-2 border-b border-gray-200 p-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-sm font-semibold text-gray-900">Замечания</h2>
-                    <div className="inline-flex rounded-md border border-gray-200 text-xs" role="group">
-                      {(['open', 'all'] as const).map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          aria-pressed={statusView === v}
-                          onClick={() => setStatusView(v)}
-                          className={cn(
-                            'px-2 py-1 first:rounded-l-md last:rounded-r-md',
-                            statusView === v ? 'bg-gray-900 text-white' : 'hover:bg-gray-100'
-                          )}
-                        >
-                          {v === 'open' ? 'Открытые' : 'Все'}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  {selectedDocId && (
-                    <div className="inline-flex rounded-md border border-gray-200 text-xs" role="group">
-                      {(['document', 'package'] as const).map((v) => (
-                        <button
-                          key={v}
-                          type="button"
-                          aria-pressed={scope === v}
-                          onClick={() => setScope(v)}
-                          className={cn(
-                            'px-2 py-1 first:rounded-l-md last:rounded-r-md',
-                            scope === v ? 'bg-gray-900 text-white' : 'hover:bg-gray-100'
-                          )}
-                        >
-                          {v === 'document' ? 'Этот документ' : 'Весь пакет'}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <div className="flex flex-wrap gap-1.5">
-                    {SEVERITY_ORDER.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        aria-pressed={severities.includes(s)}
-                        onClick={() => toggleSeverity(s)}
-                        className={cn(
-                          'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs',
-                          severities.includes(s)
-                            ? SEVERITY_STYLES[s].chip
-                            : 'border-gray-200 text-gray-600 hover:bg-gray-50'
-                        )}
-                      >
-                        <span className={cn('h-2 w-2 rounded-full', SEVERITY_STYLES[s].dot)} />
-                        {SEVERITY_LABELS[s]}
-                        <span className="tabular-nums">{counts[s]}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="min-h-0 flex-1 overflow-y-auto p-3">
-                  {processing && (
-                    <p className="flex items-center gap-2 text-sm text-gray-500">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Идёт обработка — замечания появятся, как только будет готов первый документ.
-                    </p>
-                  )}
-                  {!processing && visible.length === 0 && (
-                    <div className="flex flex-col items-center gap-2 py-8 text-center text-sm text-gray-500">
-                      <ShieldCheck className="h-8 w-8 text-green-600" />
-                      Замечаний нет
-                    </div>
-                  )}
-                  <ul className="space-y-2">
-                    {visible.map((f) => (
-                      <FindingCard
-                        key={f.id}
-                        finding={f}
-                        selected={f.id === selectedFindingId}
-                        documentName={effectiveScope === 'package' ? documentNames.get(f.documentId) : undefined}
-                        onSelect={() => {
-                          setSelectedFindingId(f.id)
-                          setSelectedDocId(f.documentId)
-                        }}
-                        onDecide={(status) => decide(f, status)}
-                        onDismiss={onLead}
-                      />
-                    ))}
-                  </ul>
-                </div>
-              </section>
-            </TabsContent>
-            <TabsContent value="fields" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-              {cabinetStub}
-            </TabsContent>
-            <TabsContent value="checklist" className="mt-0 min-h-0 flex-1 overflow-y-auto">
-              {cabinetStub}
-            </TabsContent>
-          </Tabs>
-        </Card>
+          }
+        />
       </div>
     </div>
   )
