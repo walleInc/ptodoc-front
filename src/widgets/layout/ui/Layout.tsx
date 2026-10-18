@@ -43,12 +43,12 @@ export function Layout() {
       {/* Мобильный сайдбар (оверлей, только < lg) */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent side="left" hideClose className="w-[min(100%,16rem)] p-0 sm:w-64">
-          <div className="flex items-center justify-between h-14 sm:h-16 pl-0 pr-3 sm:pr-4 border-b border-gray-200">
-            <div className="flex items-center gap-2 min-w-0">
+          <div className="flex h-14 items-center justify-between border-b border-gray-200 pr-3 sm:h-16 sm:pr-4">
+            <div className="flex min-w-0 items-center gap-2">
               <span className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden bg-white sm:h-16 sm:w-16">
-                <img src={logo} alt="" className="h-full w-full scale-150 object-cover" />
+                <img src={logo} alt="" className="h-full w-full object-contain object-left" />
               </span>
-              <span className="text-lg sm:text-xl font-bold text-primary-600 truncate">ПТО-Doc</span>
+              <span className="truncate text-lg font-bold text-primary-600 sm:text-xl">ПТО-Doc</span>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} aria-label="Закрыть меню">
               <X className="h-5 w-5" />

@@ -10,18 +10,18 @@ export function DemoPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gray-50 text-gray-900">
-      <header className="sticky top-0 z-40 shrink-0 border-b border-gray-200 bg-white">
-        <div className="container-main flex h-16 items-center">
-          <Link to="/" className="flex items-center gap-2" aria-label="ПТО-Doc, на главную">
-            <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
-              <img src={logo} alt="" className="h-full w-full scale-125 object-cover" />
+    <div className="flex h-dvh flex-col overflow-hidden bg-gray-50 text-gray-900">
+      <header className="z-40 shrink-0 border-b border-gray-200 bg-white">
+        <div className="flex h-16 w-full items-center">
+          <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="ПТО-Doc, на главную">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
+              <img src={logo} alt="" className="h-full w-full object-contain object-left" />
             </span>
             <span className="text-xl font-bold text-primary-600">ПТО-Doc</span>
           </Link>
         </div>
       </header>
-      <main className="flex flex-1 flex-col">
+      <main className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <PublicDemoFlow />
       </main>
     </div>

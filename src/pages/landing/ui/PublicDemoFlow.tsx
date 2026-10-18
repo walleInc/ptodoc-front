@@ -139,7 +139,7 @@ export function PublicDemoFlow() {
 
   if (phase === 'processing' || (phase === 'result' && result)) {
     return (
-      <div className="mx-auto w-full max-w-[110rem] space-y-4 px-3 py-6 sm:px-6 sm:py-8 lg:px-8">
+      <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
         <DemoPackageWorkspace
           files={files}
           result={result ?? { findings: [], disclaimer: '', mock: true }}

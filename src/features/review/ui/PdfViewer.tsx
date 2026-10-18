@@ -64,7 +64,7 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
   )
 
   return (
-    <div className="h-full min-h-0">
+    <div className="h-full min-h-0 [&_.rpv-core__viewer]:h-full">
       <Worker workerUrl={workerUrl}>
         <Viewer
           key={fileUrl}

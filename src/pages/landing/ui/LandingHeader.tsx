@@ -46,8 +46,8 @@ export function LandingHeader() {
           className="flex cursor-pointer items-center gap-2"
           aria-label="ПТО-Doc, на главную"
         >
-          <span className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
-            <img src={logo} alt="" className="h-full w-full scale-125 object-cover" />
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white shadow-sm">
+            <img src={logo} alt="" className="h-full w-full object-contain object-left" />
           </span>
           <span
             className={
