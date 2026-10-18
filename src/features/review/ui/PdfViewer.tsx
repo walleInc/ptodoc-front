@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Viewer, Worker, type RenderPageProps } from '@react-pdf-viewer/core'
 import { pageNavigationPlugin } from '@react-pdf-viewer/page-navigation'
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.js?url'
@@ -30,8 +30,8 @@ function scaleFromWidth(width: number): number {
 }
 
 export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }: PdfViewerProps) {
-  const navigation = useMemo(() => pageNavigationPlugin(), [])
-  const plugins = useMemo(() => [navigation], [navigation])
+  // pageNavigationPlugin() вызывает хуки внутри — только на верхнем уровне каждый рендер, не в useMemo
+  const navigation = pageNavigationPlugin()
   const { jumpToPage } = navigation
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -47,7 +47,6 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
       setScale((prev) => (Math.abs(prev - next) < 0.05 ? prev : next))
     }
 
-    // Двойной rAF — дождаться flex-layout (иначе clientWidth=0 при h-0 flex-1)
     const raf = requestAnimationFrame(() => {
       requestAnimationFrame(() => applyWidth(el.clientWidth))
     })
@@ -113,7 +112,7 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
           fileUrl={fileUrl}
           defaultScale={scale}
           initialPage={page ? page - 1 : 0}
-          plugins={plugins}
+          plugins={[navigation]}
           renderPage={renderPage}
         />
       </Worker>
