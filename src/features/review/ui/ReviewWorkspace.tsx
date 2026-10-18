@@ -105,12 +105,12 @@ export function ReviewWorkspace({
   return (
     <div
       className={cn(
-        'flex h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white lg:flex-row',
+        'flex h-full max-h-full min-h-0 w-full flex-col overflow-hidden rounded-lg border border-gray-200 bg-white lg:flex-row',
         className
       )}
     >
       <aside
-        className="flex min-h-0 w-full max-h-[26%] shrink-0 flex-col border-b border-gray-200 bg-white lg:max-h-none lg:w-[var(--rw-left)] lg:shrink-0 lg:border-b-0"
+        className="flex max-h-[22%] min-h-0 w-full shrink-0 flex-col overflow-hidden border-b border-gray-200 bg-white lg:max-h-none lg:w-[var(--rw-left)] lg:shrink-0 lg:border-b-0"
         style={leftStyle}
       >
         {left}
@@ -119,7 +119,7 @@ export function ReviewWorkspace({
       <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">{center}</section>
       <ResizeGutter onDragStart={startRight} onDrag={dragRight} />
       <aside
-        className="flex min-h-0 w-full max-h-[30%] shrink-0 flex-col border-t border-gray-200 bg-white lg:max-h-none lg:w-[var(--rw-right)] lg:shrink-0 lg:border-t-0"
+        className="flex max-h-[28%] min-h-0 w-full shrink-0 flex-col overflow-hidden border-t border-gray-200 bg-white lg:max-h-none lg:w-[var(--rw-right)] lg:shrink-0 lg:border-t-0"
         style={rightStyle}
       >
         {right}

@@ -153,7 +153,7 @@ export function PublicDemoFlow() {
 
   if (used) {
     return (
-      <section className={`flex flex-1 items-center justify-center px-4 py-12 sm:py-16 ${GREEN_SCREEN_BG}`}>
+      <section className={`flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-4 py-12 sm:py-16 ${GREEN_SCREEN_BG}`}>
         <GreenScreenDecor />
 
         <div className="relative z-10 flex w-full max-w-2xl flex-col items-center text-center">
@@ -199,7 +199,7 @@ export function PublicDemoFlow() {
   }
 
   return (
-    <section className={`flex flex-1 items-center justify-center px-4 py-8 sm:py-12 ${GREEN_SCREEN_BG}`}>
+    <section className={`flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-4 py-8 sm:py-12 ${GREEN_SCREEN_BG}`}>
       <GreenScreenDecor />
 
       <div className="relative z-10 w-full max-w-2xl space-y-6">
