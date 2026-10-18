@@ -24,13 +24,18 @@ interface PdfViewerProps {
 /** A4 width at 96dpi — база для numeric scale под ширину контейнера. */
 const PDF_PAGE_CSS_WIDTH = 794
 
+function scaleFromWidth(width: number): number {
+  if (width < 40) return 1
+  return Math.min(2.5, Math.max(0.35, (width - 16) / PDF_PAGE_CSS_WIDTH))
+}
+
 export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }: PdfViewerProps) {
   const navigation = useMemo(() => pageNavigationPlugin(), [])
   const plugins = useMemo(() => [navigation], [navigation])
   const { jumpToPage } = navigation
 
   const containerRef = useRef<HTMLDivElement>(null)
-  const [scale, setScale] = useState<number | null>(null)
+  const [scale, setScale] = useState(1)
 
   useEffect(() => {
     const el = containerRef.current
@@ -38,12 +43,14 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
 
     let timer: ReturnType<typeof setTimeout> | undefined
     const applyWidth = (width: number) => {
-      if (width < 40) return
-      const next = Math.min(2.5, Math.max(0.35, (width - 16) / PDF_PAGE_CSS_WIDTH))
-      setScale((prev) => (prev !== null && Math.abs(prev - next) < 0.05 ? prev : next))
+      const next = scaleFromWidth(width)
+      setScale((prev) => (Math.abs(prev - next) < 0.05 ? prev : next))
     }
 
-    applyWidth(el.clientWidth)
+    // Двойной rAF — дождаться flex-layout (иначе clientWidth=0 при h-0 flex-1)
+    const raf = requestAnimationFrame(() => {
+      requestAnimationFrame(() => applyWidth(el.clientWidth))
+    })
 
     const ro = new ResizeObserver((entries) => {
       const width = entries[0]?.contentRect.width ?? el.clientWidth
@@ -52,6 +59,7 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
     })
     ro.observe(el)
     return () => {
+      cancelAnimationFrame(raf)
       window.clearTimeout(timer)
       ro.disconnect()
     }
@@ -99,18 +107,16 @@ export function PdfViewer({ fileUrl, page, highlights = [], activeHighlightId }:
 
   return (
     <div ref={containerRef} className="h-full w-full min-h-0 overflow-hidden [&_.rpv-core__viewer]:h-full">
-      {scale !== null && (
-        <Worker workerUrl={workerUrl}>
-          <Viewer
-            key={`${fileUrl}:${scale.toFixed(2)}`}
-            fileUrl={fileUrl}
-            defaultScale={scale}
-            initialPage={page ? page - 1 : 0}
-            plugins={plugins}
-            renderPage={renderPage}
-          />
-        </Worker>
-      )}
+      <Worker workerUrl={workerUrl}>
+        <Viewer
+          key={`${fileUrl}:${scale.toFixed(2)}`}
+          fileUrl={fileUrl}
+          defaultScale={scale}
+          initialPage={page ? page - 1 : 0}
+          plugins={plugins}
+          renderPage={renderPage}
+        />
+      </Worker>
     </div>
   )
 }
