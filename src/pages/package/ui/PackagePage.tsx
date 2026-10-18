@@ -118,7 +118,7 @@ export function PackagePage() {
         )}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-hidden p-0">
+      <div className="min-h-0 h-0 flex-1 overflow-hidden p-0">
         <ReviewWorkspace
           className="h-full rounded-none border-0 border-t"
           left={

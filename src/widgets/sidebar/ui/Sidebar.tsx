@@ -39,19 +39,14 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
       {!embedded && (
         <div
           className={cn(
-            'relative flex-shrink-0 border-b border-gray-200',
-            collapsed
-              ? 'flex flex-col items-center gap-1 pl-0 pr-2 py-2'
-              : 'flex h-16 items-center pr-3'
+            'flex shrink-0 items-center border-b border-gray-200',
+            collapsed ? 'flex-col gap-1 px-0 py-2' : 'h-16 gap-2 pr-3'
           )}
         >
           <Link
             to="/dashboard"
             aria-label="На главную"
-            className={cn(
-              'flex items-center shrink-0',
-              collapsed ? 'justify-center' : 'absolute left-0 top-0 h-16 w-16'
-            )}
+            className={cn('flex shrink-0 items-center', collapsed && 'justify-center')}
           >
             <span
               className={cn(
@@ -59,16 +54,12 @@ export function Sidebar({ collapsed = false, embedded = false, onToggle }: Sideb
                 collapsed ? 'h-14 w-14' : 'h-16 w-16'
               )}
             >
-              <img
-                src={logo}
-                alt=""
-                className="h-full w-full scale-150 object-cover object-left"
-              />
+              <img src={logo} alt="" className="h-full w-full object-contain object-left" />
             </span>
           </Link>
           {!collapsed && (
             <>
-              <span className="ml-16 text-xl font-bold leading-none text-primary-600">ПТО-Doc</span>
+              <span className="text-xl font-bold leading-none text-primary-600">ПТО-Doc</span>
               <div className="flex-1" />
               <Button
                 variant="ghost"
